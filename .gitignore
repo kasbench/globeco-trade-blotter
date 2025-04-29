@@ -61,3 +61,15 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+### Cursor ###
+.cursor
+.cursor/
+
+### Mac ###
+.DS_Store
+
+### Docker ###
+.docker/
+
