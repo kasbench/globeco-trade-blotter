@@ -9,7 +9,7 @@
 
 -- object: postgres | type: DATABASE --
 -- DROP DATABASE IF EXISTS postgres;
--- CREATE DATABASE postgres;
+CREATE DATABASE postgres;
 -- ddl-end --
 
 
@@ -21,7 +21,7 @@ SET search_path TO pg_catalog,public;
 CREATE TABLE public.blotter (
 	id serial NOT NULL,
 	name varchar(60) NOT NULL,
-	auto_populate bit NOT NULL DEFAULT 0,
+	auto_populate bit NOT NULL DEFAULT 0::bit,
 	security_type_id integer,
 	version integer NOT NULL DEFAULT 0,
 	CONSTRAINT blotter_pk PRIMARY KEY (id)
@@ -68,15 +68,13 @@ ON DELETE RESTRICT ON UPDATE CASCADE;
 -- DROP TABLE IF EXISTS public."order" CASCADE;
 CREATE TABLE public."order" (
 	id serial NOT NULL,
-	name varchar(60) NOT NULL,
-	auto_populate bit NOT NULL DEFAULT 0,
 	blotter_id integer,
 	security_id integer NOT NULL,
 	quantity decimal(18,8),
 	order_timestamp timestamptz,
-	"order_status_{sx}" integer,
-	order_type_id integer NOT NULL,
 	version integer NOT NULL DEFAULT 0,
+	order_type_id integer NOT NULL,
+	order_status_id integer,
 	CONSTRAINT order_pk PRIMARY KEY (id)
 );
 -- ddl-end --
@@ -188,7 +186,7 @@ ALTER TABLE public.order_status OWNER TO postgres;
 
 -- object: order_status_order_fk | type: CONSTRAINT --
 -- ALTER TABLE public."order" DROP CONSTRAINT IF EXISTS order_status_order_fk CASCADE;
-ALTER TABLE public."order" ADD CONSTRAINT order_status_order_fk FOREIGN KEY ("order_status_{sx}")
+ALTER TABLE public."order" ADD CONSTRAINT order_status_order_fk FOREIGN KEY (order_status_id)
 REFERENCES public.order_status (id) MATCH FULL
 ON DELETE SET NULL ON UPDATE CASCADE;
 -- ddl-end --

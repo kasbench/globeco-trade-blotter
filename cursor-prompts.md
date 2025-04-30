@@ -1,0 +1,3 @@
+- Please review @context-blotter.md .  It has been updated.  There is a section called "Sample Data for Security Type".  Please create a Flyway migration to insert the sample data into the security type table.  The database schema is in @context-blotter.md .  You have already created the Flyway migration for the schema as V1__initial_schema.sql.
+
+- In @context-blotter.md , there is a section called "Sample Data for Blotter".  Please create a Flyway migration to insert the sample data into the blotter table.  The database schema is in @context-blotter.md .  Please log the prompt in cursor-prompts.md.  Please log your action in cursor-log.md
