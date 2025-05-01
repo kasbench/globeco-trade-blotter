@@ -1,2 +1,4 @@
 - Created Flyway migration V2__sample_security_type_data.sql in src/main/resources/db/migration/ to insert sample data into the security_type table, as specified in the updated requirements-blotter.md.
 - Created Flyway migration V3__sample_blotter_data.sql in src/main/resources/db/migration/ to insert sample data into the blotter table, as specified in the updated requirements-blotter.md.
+- Removed Lombok dependencies from build.gradle
+- Replaced Lombok annotations in SecurityType.java with standard Java methods (getters, setters, constructors, equals, hashCode, and toString)
