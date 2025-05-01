@@ -11,3 +11,7 @@
 - Please create unit tests for all the Security Type related classes you have created.  You can refer to cursor-log.md to see what you have created.  As usual, please record this prompt in cursor-prompts.md and your actions in cursor-log.md
 
 - Please document the security type in @SecurityTypeController.java  in the README.md
+
+- In the @requirements-blotter.md , please refer to the ### Blotter section.  Create the blotter entity, repository, service interface, service implementation, and REST controller.  Document it in the @README.md file in the same format as the documentation for Security Type.  As usual, please record this prompt in cursor-prompts.md and your actions in cursor-log.md
+
+- Thanks.  Please create unit tests for all Blotter-related classes you just created. As usual, please record this prompt in cursor-prompts.md and your actions in cursor-log.md

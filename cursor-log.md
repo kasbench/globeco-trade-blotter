@@ -10,3 +10,12 @@
 - Created SecurityTypeServiceImplTest.java with comprehensive service layer tests including error cases
 - Created SecurityTypeControllerTest.java with REST endpoint tests including error handling
 - Added comprehensive documentation for the Security Type REST API to README.md, including endpoints, data model, and error handling
+- Created Blotter.java entity class with JPA annotations and standard Java methods
+- Created BlotterRepository.java as a JPA repository interface
+- Created BlotterService.java interface with CRUD operations
+- Created BlotterServiceImpl.java implementing the service with error handling and optimistic locking
+- Created BlotterController.java exposing REST endpoints for Blotter
+- Added Blotter API documentation to README.md in the same format as Security Type
+- Created BlotterTest.java with unit tests for the entity class (constructors, getters, setters, equals, hashCode, toString)
+- Created BlotterServiceImplTest.java with comprehensive service layer tests including error cases and optimistic locking
+- Created BlotterControllerTest.java with REST endpoint tests including error handling
