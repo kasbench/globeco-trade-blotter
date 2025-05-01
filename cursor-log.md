@@ -2,3 +2,11 @@
 - Created Flyway migration V3__sample_blotter_data.sql in src/main/resources/db/migration/ to insert sample data into the blotter table, as specified in the updated requirements-blotter.md.
 - Removed Lombok dependencies from build.gradle
 - Replaced Lombok annotations in SecurityType.java with standard Java methods (getters, setters, constructors, equals, hashCode, and toString)
+- Created SecurityTypeRepository.java with JPA repository interface for SecurityType entity
+- Created SecurityTypeService.java interface defining the service operations
+- Created SecurityTypeServiceImpl.java implementing the service layer with proper transaction management and optimistic locking
+- Created SecurityTypeController.java implementing the REST API endpoints with proper error handling
+- Created SecurityTypeTest.java with unit tests for the entity class (constructors, getters, setters, equals, hashCode, toString)
+- Created SecurityTypeServiceImplTest.java with comprehensive service layer tests including error cases
+- Created SecurityTypeControllerTest.java with REST endpoint tests including error handling
+- Added comprehensive documentation for the Security Type REST API to README.md, including endpoints, data model, and error handling

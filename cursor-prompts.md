@@ -5,3 +5,9 @@
 - In @requirements-blotter.md , please implement the APIs for Security Type as described in the Security Type section.  Please log this prompt in cursor-prompts.md. Please log your actions in cursor-log.md.
 
 - Please remove lombok from build.gradle and from wherever it is used.  Please replace with getters, setters, constructors, equals, and hash code methods.  As usual, please record this prompt in cursor-prompts.md and your actions in cursor-log.md
+
+- Please implement the REST API for Security Type as described in @requirements-blotter.md .  Please create the JPA repository, service interface, service implementation, and expose a REST web interface.  As usual, please record this prompt in cursor-prompts.md and your actions in cursor-log.md
+
+- Please create unit tests for all the Security Type related classes you have created.  You can refer to cursor-log.md to see what you have created.  As usual, please record this prompt in cursor-prompts.md and your actions in cursor-log.md
+
+- Please document the security type in @SecurityTypeController.java  in the README.md
