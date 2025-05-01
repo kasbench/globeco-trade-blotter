@@ -342,3 +342,116 @@ The API uses standard HTTP status codes and includes descriptive error messages:
 - `409 Conflict` - Optimistic locking failure
 - `400 Bad Request` - Invalid input
 - `500 Internal Server Error` - Server-side errors
+
+---
+
+## Destination API
+
+The Destination API provides endpoints to manage destinations, which are exchanges or other executing entities where trades are sent.
+
+### Endpoints
+
+#### Get All Destinations
+```http
+GET /destination
+```
+Returns a list of all destinations.
+
+**Response**
+- `200 OK` - Returns an array of destinations
+```json
+[
+    {
+        "destinationId": 1,
+        "abbreviation": "NYSE",
+        "description": "New York Stock Exchange",
+        "versionId": 1
+    }
+]
+```
+
+#### Get Destination by ID
+```http
+GET /destination/{destinationId}
+```
+Returns a specific destination by ID.
+
+**Response**
+- `200 OK` - Returns the destination
+- `404 Not Found` - If destination doesn't exist
+```json
+{
+    "destinationId": 1,
+    "abbreviation": "NYSE",
+    "description": "New York Stock Exchange",
+    "versionId": 1
+}
+```
+
+#### Create Destination
+```http
+POST /destination
+```
+Creates a new destination.
+
+**Request Body**
+```json
+{
+    "destinationId": 1,
+    "abbreviation": "NYSE",
+    "description": "New York Stock Exchange",
+    "versionId": 1
+}
+```
+
+**Response**
+- `201 Created` - Returns the created destination
+
+#### Update Destination
+```http
+PUT /destination/{destinationId}
+```
+Updates an existing destination.
+
+**Request Body**
+```json
+{
+    "abbreviation": "NYSE",
+    "description": "New York Stock Exchange",
+    "versionId": 1
+}
+```
+
+**Response**
+- `200 OK` - Returns the updated destination
+- `404 Not Found` - If destination doesn't exist
+- `409 Conflict` - If version mismatch (optimistic locking)
+
+#### Delete Destination
+```http
+DELETE /destination/{destinationId}?versionId={versionId}
+```
+Deletes a destination. Requires the current version for optimistic locking.
+
+**Response**
+- `204 No Content` - Successfully deleted
+- `404 Not Found` - If destination doesn't exist
+- `409 Conflict` - If version mismatch (optimistic locking)
+
+### Data Model
+
+| Field | Type | Description | Constraints |
+|-------|------|-------------|------------|
+| destinationId | Integer | Unique identifier | Required |
+| abbreviation | String | Abbreviation for the destination | Required, max 20 chars |
+| description | String | Long description of the destination | Required, max 100 chars |
+| versionId | Integer | Version for optimistic locking | Required |
+
+### Error Handling
+
+The API uses standard HTTP status codes and includes descriptive error messages:
+
+- `404 Not Found` - Resource not found
+- `409 Conflict` - Optimistic locking failure
+- `400 Bad Request` - Invalid input
+- `500 Internal Server Error` - Server-side errors
