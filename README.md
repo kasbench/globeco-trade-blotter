@@ -455,3 +455,71 @@ The API uses standard HTTP status codes and includes descriptive error messages:
 - `409 Conflict` - Optimistic locking failure
 - `400 Bad Request` - Invalid input
 - `500 Internal Server Error` - Server-side errors
+
+### Order Type API
+
+The Order Type service provides endpoints to manage order types in the system.
+
+#### Endpoints
+
+##### Get All Order Types
+- **GET** `/order-type`
+- Returns a list of all order types
+- Response: Array of order type objects
+```json
+[
+    {
+        "id": 1,
+        "abbreviation": "MKT",
+        "description": "Market Order",
+        "version": 1
+    }
+]
+```
+
+##### Get Order Type by ID
+- **GET** `/order-type/{orderTypeId}`
+- Returns a specific order type by ID
+- Response: Order type object or 404 if not found
+```json
+{
+    "id": 1,
+    "abbreviation": "MKT",
+    "description": "Market Order",
+    "version": 1
+}
+```
+
+##### Create Order Type
+- **POST** `/order-type`
+- Creates a new order type
+- Request body: Order type object (without ID)
+```json
+{
+    "abbreviation": "LMT",
+    "description": "Limit Order"
+}
+```
+- Response: Created order type object with ID
+
+##### Update Order Type
+- **PUT** `/order-type/{orderTypeId}`
+- Updates an existing order type
+- Request body: Order type object
+```json
+{
+    "abbreviation": "LMT",
+    "description": "Limit Order",
+    "version": 1
+}
+```
+- Response: Updated order type object
+- Status: 404 if not found, 409 if version mismatch
+
+##### Delete Order Type
+- **DELETE** `/order-type/{orderTypeId}?versionId={version}`
+- Deletes an order type
+- Parameters:
+  - orderTypeId: ID of the order type to delete
+  - versionId: Current version of the order type
+- Status: 204 on success, 404 if not found, 409 if version mismatch
