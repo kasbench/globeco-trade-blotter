@@ -523,3 +523,116 @@ The Order Type service provides endpoints to manage order types in the system.
   - orderTypeId: ID of the order type to delete
   - versionId: Current version of the order type
 - Status: 204 on success, 404 if not found, 409 if version mismatch
+
+## Order Status API
+
+The Order Status service provides endpoints to manage order statuses in the system. Order statuses define the current state of an order (e.g., new, open, blocked, sent, filled, cancelled).
+
+### Endpoints
+
+#### Get All Order Statuses
+```http
+GET /order-status
+```
+Returns a list of all order statuses.
+
+**Response**
+- `200 OK` - Returns an array of order statuses
+```json
+[
+    {
+        "id": 1,
+        "abbreviation": "new",
+        "description": "Newly created order",
+        "version": 1
+    }
+]
+```
+
+#### Get Order Status by ID
+```http
+GET /order-status/{orderStatusId}
+```
+Returns a specific order status by ID.
+
+**Response**
+- `200 OK` - Returns the order status
+- `404 Not Found` - If order status doesn't exist
+```json
+{
+    "id": 1,
+    "abbreviation": "new",
+    "description": "Newly created order",
+    "version": 1
+}
+```
+
+#### Create Order Status
+```http
+POST /order-status
+```
+Creates a new order status.
+
+**Request Body**
+```json
+{
+    "abbreviation": "new",
+    "description": "Newly created order"
+}
+```
+
+**Response**
+- `201 Created` - Returns the created order status
+
+#### Update Order Status
+```http
+PUT /order-status/{orderStatusId}
+```
+Updates an existing order status.
+
+**Request Body**
+```json
+{
+    "abbreviation": "new",
+    "description": "Newly created order",
+    "version": 1
+}
+```
+
+**Response**
+- `200 OK` - Returns the updated order status
+- `404 Not Found` - If order status doesn't exist
+- `409 Conflict` - If version mismatch (optimistic locking)
+
+#### Delete Order Status
+```http
+DELETE /order-status/{orderStatusId}?versionId={version}
+```
+Deletes an order status.
+
+**Parameters**
+- orderStatusId: ID of the order status to delete
+- versionId: Current version of the order status
+
+**Response**
+- `204 No Content` - Successfully deleted
+- `404 Not Found` - If order status doesn't exist
+- `409 Conflict` - If version mismatch (optimistic locking)
+
+### Data Model
+
+| Field | Type | Description | Constraints |
+|-------|------|-------------|------------|
+| id | Integer | Unique identifier | Required |
+| abbreviation | String | Short code for the order status | Required, max 20 chars |
+| description | String | Full description | Required, max 60 chars |
+| version | Integer | Version for optimistic locking | Required |
+
+### Error Handling
+
+The API uses standard HTTP status codes and includes descriptive error messages:
+
+- `404 Not Found` - Resource not found
+- `409 Conflict` - Optimistic locking failure
+- `400 Bad Request` - Invalid input
+- `500 Internal Server Error` - Server-side errors
