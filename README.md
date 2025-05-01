@@ -229,3 +229,116 @@ The API uses standard HTTP status codes and includes descriptive error messages:
 - `409 Conflict` - Optimistic locking failure
 - `400 Bad Request` - Invalid input
 - `500 Internal Server Error` - Server-side errors
+
+---
+
+## Trade Type API
+
+The Trade Type API provides endpoints to manage trade types, which categorize the way a trade may be placed with the sell side (e.g., buy, sell, open, close, etc.).
+
+### Endpoints
+
+#### Get All Trade Types
+```http
+GET /tradeType
+```
+Returns a list of all trade types.
+
+**Response**
+- `200 OK` - Returns an array of trade types
+```json
+[
+    {
+        "tradeTypeId": 1,
+        "abbreviation": "buy",
+        "description": "buy",
+        "versionId": 1
+    }
+]
+```
+
+#### Get Trade Type by ID
+```http
+GET /tradeType/{tradeTypeId}
+```
+Returns a specific trade type by ID.
+
+**Response**
+- `200 OK` - Returns the trade type
+- `404 Not Found` - If trade type doesn't exist
+```json
+{
+    "tradeTypeId": 1,
+    "abbreviation": "buy",
+    "description": "buy",
+    "versionId": 1
+}
+```
+
+#### Create Trade Type
+```http
+POST /tradeType
+```
+Creates a new trade type.
+
+**Request Body**
+```json
+{
+    "tradeTypeId": 1,
+    "abbreviation": "buy",
+    "description": "buy",
+    "versionId": 1
+}
+```
+
+**Response**
+- `201 Created` - Returns the created trade type
+
+#### Update Trade Type
+```http
+PUT /tradeType/{tradeTypeId}
+```
+Updates an existing trade type.
+
+**Request Body**
+```json
+{
+    "abbreviation": "buy",
+    "description": "buy",
+    "versionId": 1
+}
+```
+
+**Response**
+- `200 OK` - Returns the updated trade type
+- `404 Not Found` - If trade type doesn't exist
+- `409 Conflict` - If version mismatch (optimistic locking)
+
+#### Delete Trade Type
+```http
+DELETE /tradeType/{tradeTypeId}?versionId={versionId}
+```
+Deletes a trade type. Requires the current version for optimistic locking.
+
+**Response**
+- `204 No Content` - Successfully deleted
+- `404 Not Found` - If trade type doesn't exist
+- `409 Conflict` - If version mismatch (optimistic locking)
+
+### Data Model
+
+| Field | Type | Description | Constraints |
+|-------|------|-------------|------------|
+| tradeTypeId | Integer | Unique identifier | Required |
+| abbreviation | String | Abbreviation for the trade type | Required, max 10 chars |
+| description | String | Long description of the trade type | Required, max 100 chars |
+| versionId | Integer | Version for optimistic locking | Required |
+
+### Error Handling
+
+The API uses standard HTTP status codes and includes descriptive error messages:
+
+- `404 Not Found` - Resource not found
+- `409 Conflict` - Optimistic locking failure
+- `400 Bad Request` - Invalid input
+- `500 Internal Server Error` - Server-side errors

@@ -15,3 +15,7 @@
 - In the @requirements-blotter.md , please refer to the ### Blotter section.  Create the blotter entity, repository, service interface, service implementation, and REST controller.  Document it in the @README.md file in the same format as the documentation for Security Type.  As usual, please record this prompt in cursor-prompts.md and your actions in cursor-log.md
 
 - Thanks.  Please create unit tests for all Blotter-related classes you just created. As usual, please record this prompt in cursor-prompts.md and your actions in cursor-log.md
+
+- In the @requirements-blotter.md , please refer to the ### Blotter section.  Create the Flyway migration for the data provided in #### Sample Data for Blotter.    As usual, please record this prompt in cursor-prompts.md and your actions in cursor-log.md
+
+- Please refer to the ### Trade Type section of #requirements-blotter.md.  Using the information provided in that section, please create the entity, repository, service interface, service implementation, REST controller, unit tests, and Flyway migration.  Add documentation for the service to README.md.  As usual, record the prompt in cursor-prompts.md and log your actions in cursor-log.md.

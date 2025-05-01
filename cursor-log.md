@@ -1,5 +1,6 @@
 - Created Flyway migration V2__sample_security_type_data.sql in src/main/resources/db/migration/ to insert sample data into the security_type table, as specified in the updated requirements-blotter.md.
 - Created Flyway migration V3__sample_blotter_data.sql in src/main/resources/db/migration/ to insert sample data into the blotter table, as specified in the updated requirements-blotter.md.
+- Created Flyway migration V4__sample_blotter_data.sql in src/main/resources/db/migration/ to insert sample data into the blotter table, as specified in the requirements-blotter.md.
 - Removed Lombok dependencies from build.gradle
 - Replaced Lombok annotations in SecurityType.java with standard Java methods (getters, setters, constructors, equals, hashCode, and toString)
 - Created SecurityTypeRepository.java with JPA repository interface for SecurityType entity
@@ -19,3 +20,13 @@
 - Created BlotterTest.java with unit tests for the entity class (constructors, getters, setters, equals, hashCode, toString)
 - Created BlotterServiceImplTest.java with comprehensive service layer tests including error cases and optimistic locking
 - Created BlotterControllerTest.java with REST endpoint tests including error handling
+- Created TradeType.java entity class with JPA annotations and standard Java methods
+- Created TradeTypeRepository.java as a JPA repository interface
+- Created TradeTypeService.java interface with CRUD operations
+- Created TradeTypeServiceImpl.java implementing the service with error handling and optimistic locking
+- Created TradeTypeController.java exposing REST endpoints for TradeType
+- Created TradeTypeTest.java with unit tests for the entity class
+- Created TradeTypeServiceImplTest.java with comprehensive service layer tests including error cases and optimistic locking
+- Created TradeTypeControllerTest.java with REST endpoint tests including error handling
+- Created Flyway migration V5__sample_trade_type_data.sql to insert sample data into the trade_type table
+- Added Trade Type API documentation to README.md in the same format as other resources
