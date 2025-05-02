@@ -970,3 +970,124 @@ The API uses standard HTTP status codes and includes descriptive error messages:
 - `409 Conflict` - Optimistic locking failure
 - `400 Bad Request` - Invalid input (e.g., filled quantity out of range)
 - `500 Internal Server Error` - Server-side errors
+
+---
+
+## Trade API
+
+The Trade API provides endpoints to manage trades, which are transactions placed with a destination for the acquisition, disposition, or exercise of a security.
+
+### Endpoints
+
+#### Get All Trades
+```http
+GET /trade
+```
+Returns a list of all trades.
+
+**Response**
+- `200 OK` - Returns an array of trades
+
+#### Get Trade by ID
+```http
+GET /trade/{tradeId}
+```
+Returns a specific trade by ID.
+
+**Response**
+- `200 OK` - Returns the trade
+- `404 Not Found` - If trade doesn't exist
+
+#### Get Trades by Block ID
+```http
+GET /trade/block/{blockId}
+```
+Returns all trades for the specified blockId.
+
+**Response**
+- `200 OK` - Returns an array of trades
+
+#### Create Trade
+```http
+POST /trade
+```
+Creates a new trade.
+
+**Request Body**
+```json
+{
+    "block": { ... },
+    "quantity": 100.0,
+    "tradeType": { ... },
+    "filledQuantity": 0.0,
+    "version": 1
+}
+```
+
+**Response**
+- `201 Created` - Returns the created trade
+
+#### Update Trade
+```http
+PUT /trade/{tradeId}
+```
+Updates an existing trade.
+
+**Request Body**
+```json
+{
+    "block": { ... },
+    "quantity": 100.0,
+    "tradeType": { ... },
+    "filledQuantity": 50.0,
+    "version": 1
+}
+```
+
+**Response**
+- `200 OK` - Returns the updated trade
+- `404 Not Found` - If trade doesn't exist
+- `409 Conflict` - If version mismatch (optimistic locking)
+
+#### Delete Trade
+```http
+DELETE /trade/{tradeId}?versionId={version}
+```
+Deletes a trade. Requires the current version for optimistic locking.
+
+**Response**
+- `204 No Content` - Successfully deleted
+- `404 Not Found` - If trade doesn't exist
+- `409 Conflict` - If version mismatch (optimistic locking)
+
+#### Fill Trade Quantity
+```http
+POST /trade/{tradeId}/fill/{quantityFilled}?versionId={version}
+```
+Adds the specified quantityFilled to the current filledQuantity of the trade. Requires the current version for optimistic locking.
+
+**Response**
+- `200 OK` - Returns the updated trade
+- `404 Not Found` - If trade doesn't exist
+- `409 Conflict` - If version mismatch (optimistic locking)
+- `400 Bad Request` - If the filled quantity is invalid
+
+### Data Model
+
+| Field | Type | Description | Constraints |
+|-------|------|-------------|------------|
+| tradeId | Integer | Unique identifier | Required |
+| block | Block | The block that is being traded | Required |
+| quantity | Numeric | The quantity that is being traded | Must be > 0, max 9999999999.99999999 |
+| tradeType | TradeType | The type of trade | Required |
+| filledQuantity | Numeric | The quantity that has been filled | Must be >= 0 and <= quantity |
+| version | Integer | Version for optimistic locking | Required |
+
+### Error Handling
+
+The API uses standard HTTP status codes and includes descriptive error messages:
+
+- `404 Not Found` - Resource not found
+- `409 Conflict` - Optimistic locking failure
+- `400 Bad Request` - Invalid input (e.g., filled quantity out of range)
+- `500 Internal Server Error` - Server-side errors

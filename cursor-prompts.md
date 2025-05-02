@@ -184,3 +184,5 @@ Implemented the Order service components based on the requirements in requiremen
    - Error responses
 
 - Please refer to the ### Block Allocation section of #requirements-blotter.md.  Using the information provided in that section, please create the entity, repository, service interface, service implementation, REST controller, and unit tests. Add documentation for the service to README.md.  As usual, record the prompt in cursor-prompts.md and log your actions in cursor-log.md.
+
+- Please refer to the ### Trade section of #requirements-blotter.md.  Using the information provided in that section, please create the entity, repository, service interface, service implementation, REST controller, and unit tests.  Please enforce all constraints described in the documentation.   Add documentation for the service to README.md.  As usual, record the prompt in cursor-prompts.md and log all your actions in cursor-log.md.  Please execute all steps.  I will review it at the end.
