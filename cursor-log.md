@@ -112,4 +112,4 @@
    - Updated cursor-prompts.md with implementation details
    - Added implementation log to cursor-log.md
 
-- Started implementation of Block resource: creating entity, repository, service interface, service implementation, REST controller, unit tests, and documentation as described in requirements-blotter.md.
+- Started implementation of Block Allocation resource: creating entity, repository, service interface, service implementation, REST controller, unit tests, and documentation as described in requirements-blotter.md.

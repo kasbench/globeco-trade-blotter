@@ -840,3 +840,133 @@ The API uses standard HTTP status codes and includes descriptive error messages:
 - `409 Conflict` - Optimistic locking failure
 - `400 Bad Request` - Invalid input
 - `500 Internal Server Error` - Server-side errors
+
+---
+
+## Block Allocation API
+
+The Block Allocation API provides endpoints to manage block allocations, which are used to include orders in a block.
+
+### Endpoints
+
+#### Get All Block Allocations
+```http
+GET /blockAllocation
+```
+Returns a list of all block allocations.
+
+**Response**
+- `200 OK` - Returns an array of block allocations
+
+#### Get Block Allocation by ID
+```http
+GET /blockAllocation/{blockAllocationId}
+```
+Returns a specific block allocation by ID.
+
+**Response**
+- `200 OK` - Returns the block allocation
+- `404 Not Found` - If block allocation doesn't exist
+
+#### Get Block Allocations by Block ID
+```http
+GET /blockAllocation/block/{blockId}
+```
+Returns all block allocations for the specified blockId.
+
+**Response**
+- `200 OK` - Returns an array of block allocations
+
+#### Get Block Allocations by Order ID
+```http
+GET /blockAllocation/order/{orderId}
+```
+Returns all block allocations for the specified orderId.
+
+**Response**
+- `200 OK` - Returns an array of block allocations
+
+#### Create Block Allocation
+```http
+POST /blockAllocation
+```
+Creates a new block allocation.
+
+**Request Body**
+```json
+{
+    "order": { ... },
+    "block": { ... },
+    "quantity": 100.0,
+    "filledQuantity": 0.0,
+    "version": 1
+}
+```
+
+**Response**
+- `201 Created` - Returns the created block allocation
+
+#### Update Block Allocation
+```http
+PUT /blockAllocation/{blockAllocationId}
+```
+Updates an existing block allocation.
+
+**Request Body**
+```json
+{
+    "order": { ... },
+    "block": { ... },
+    "quantity": 100.0,
+    "filledQuantity": 50.0,
+    "version": 1
+}
+```
+
+**Response**
+- `200 OK` - Returns the updated block allocation
+- `404 Not Found` - If block allocation doesn't exist
+- `409 Conflict` - If version mismatch (optimistic locking)
+
+#### Delete Block Allocation
+```http
+DELETE /blockAllocation/{blockAllocationId}?versionId={version}
+```
+Deletes a block allocation. Requires the current version for optimistic locking.
+
+**Response**
+- `204 No Content` - Successfully deleted
+- `404 Not Found` - If block allocation doesn't exist
+- `409 Conflict` - If version mismatch (optimistic locking)
+
+#### Fill Block Allocation Quantity
+```http
+POST /blockAllocation/{blockAllocationId}/fill/{quantityFilled}?versionId={version}
+```
+Adds the specified quantityFilled to the current filledQuantity of the block allocation. Requires the current version for optimistic locking.
+
+**Response**
+- `200 OK` - Returns the updated block allocation
+- `404 Not Found` - If block allocation doesn't exist
+- `409 Conflict` - If version mismatch (optimistic locking)
+- `400 Bad Request` - If the filled quantity is invalid
+
+### Data Model
+
+| Field | Type | Description | Constraints |
+|-------|------|-------------|------------|
+| blockAllocationId | Integer | Unique identifier | Required |
+| order | Order | The order included in the block | Required |
+| block | Block | The block that is being allocated | Required |
+| quantity | Numeric | The quantity that is being allocated | Must be > 0, max 9999999999.99999999 |
+| filledQuantity | Numeric | The quantity that has been filled | Must be >= 0 and <= quantity |
+| version | Integer | Version for optimistic locking | Required |
+
+### Error Handling
+
+The API uses standard HTTP status codes and includes descriptive error messages:
+
+- `404 Not Found` - Resource not found
+- `409 Conflict` - Optimistic locking failure
+- `400 Bad Request` - Invalid input (e.g., filled quantity out of range)
+- `500 Internal Server Error` - Server-side errors
