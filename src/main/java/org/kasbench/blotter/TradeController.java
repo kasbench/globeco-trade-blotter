@@ -65,6 +65,11 @@ public class TradeController {
         return service.fillQuantity(tradeId, quantityFilled, versionId);
     }
 
+    @PostMapping("/allocateProRata")
+    public Trade allocateProRata(@RequestParam Integer tradeId, @RequestParam Integer versionId) {
+        return service.allocateProRata(tradeId, versionId);
+    }
+
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> handleNotFound(EntityNotFoundException ex) {

@@ -114,3 +114,4 @@
 
 - Started implementation of Block Allocation resource: creating entity, repository, service interface, service implementation, REST controller, unit tests, and documentation as described in requirements-blotter.md.
 - Started implementation of Trade resource: creating entity, repository, service interface, service implementation, REST controller, unit tests, and documentation as described in requirements-blotter.md.
+- Started implementation of missing APIs: /block/createBlock and /trade/allocateProRata, enforcing all constraints, updating README, and logging all actions as described in requirements-blotter.md.

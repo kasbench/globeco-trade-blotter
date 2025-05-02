@@ -8,15 +8,19 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class TradeServiceImpl implements TradeService {
     private final TradeRepository repository;
+    private final BlockAllocationService blockAllocationService;
 
     @Autowired
-    public TradeServiceImpl(TradeRepository repository) {
+    public TradeServiceImpl(TradeRepository repository, BlockAllocationService blockAllocationService) {
         this.repository = repository;
+        this.blockAllocationService = blockAllocationService;
     }
 
     @Override
@@ -81,6 +85,53 @@ public class TradeServiceImpl implements TradeService {
         }
         trade.setFilledQuantity(newFilled);
         return repository.save(trade);
+    }
+
+    @Override
+    public Trade allocateProRata(Integer tradeId, Integer versionId) {
+        Trade trade = repository.findById(tradeId)
+            .orElseThrow(() -> new EntityNotFoundException("Trade not found with id: " + tradeId));
+        if (!versionId.equals(trade.getVersion())) {
+            throw new ObjectOptimisticLockingFailureException(Trade.class, tradeId);
+        }
+        List<BlockAllocation> allocations = blockAllocationService.findByBlockId(trade.getBlock().getId());
+        if (allocations.isEmpty()) {
+            throw new IllegalArgumentException("No block allocations found for block: " + trade.getBlock().getId());
+        }
+        BigDecimal totalQuantity = allocations.stream()
+            .map(BlockAllocation::getQuantity)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        if (totalQuantity.compareTo(BigDecimal.ZERO) == 0) {
+            throw new IllegalArgumentException("Total allocation quantity is zero");
+        }
+        BigDecimal tradeFilled = trade.getFilledQuantity();
+        // Calculate pro rata allocations
+        List<BigDecimal> rawAllocations = new java.util.ArrayList<>();
+        List<BigDecimal> roundedAllocations = new java.util.ArrayList<>();
+        BigDecimal sumRounded = BigDecimal.ZERO;
+        for (BlockAllocation alloc : allocations) {
+            BigDecimal ratio = alloc.getQuantity().divide(totalQuantity, 16, java.math.RoundingMode.HALF_UP);
+            BigDecimal allocFilled = tradeFilled.multiply(ratio);
+            BigDecimal rounded = allocFilled.setScale(8, java.math.RoundingMode.HALF_UP);
+            rawAllocations.add(allocFilled);
+            roundedAllocations.add(rounded);
+            sumRounded = sumRounded.add(rounded);
+        }
+        // Adjust for rounding error
+        BigDecimal diff = tradeFilled.subtract(sumRounded);
+        if (diff.compareTo(BigDecimal.ZERO) != 0) {
+            // Pick a random allocation to adjust
+            int idx = new Random().nextInt(allocations.size());
+            roundedAllocations.set(idx, roundedAllocations.get(idx).add(diff));
+            sumRounded = sumRounded.add(diff);
+        }
+        // Apply allocations
+        for (int i = 0; i < allocations.size(); i++) {
+            BlockAllocation alloc = allocations.get(i);
+            alloc.setFilledQuantity(roundedAllocations.get(i));
+            blockAllocationService.update(alloc.getId(), alloc);
+        }
+        return trade;
     }
 
     private void validateTrade(Trade trade) {
