@@ -690,3 +690,59 @@ POST /security
 |-------------|-------------|
 | 404 | Security not found |
 | 409 | Concurrent modification detected |
+
+## Order Service
+
+The Order service provides operations for managing trading orders in the GlobeCo Trade Blotter system. An order represents a trading instruction sent from a portfolio manager to a trader.
+
+### API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | /order | Retrieves all orders |
+| GET | /order/{orderId} | Retrieves a specific order by ID |
+| POST | /order | Creates a new order |
+| PUT | /order/{orderId} | Updates an existing order |
+| DELETE | /order/{orderId} | Deletes an order (requires versionId parameter) |
+| POST | /order/{orderId}/blotter/{blotterId} | Updates the blotter assignment |
+| POST | /order/{orderId}/status/{statusId} | Updates the order status |
+
+### Data Model
+
+| Field | Type | Description | Constraints |
+|-------|------|-------------|-------------|
+| orderId | Integer | Immutable resource identifier | Required |
+| securityId | Integer | The identifier of the security to trade | Foreign key to security. Required |
+| blotterId | Integer | The blotter on which this security will land | Foreign key to blotter |
+| quantity | Numeric | The quantity of the order | Must be greater than 0. Maximum size is 9999999999.99999999 |
+| orderTimestamp | String | The time the order is placed with time zone | Automatically populated with database time in ISO 8601 format |
+| orderTypeId | Integer | The type of the order | Foreign key to orderType. Required |
+| orderStatusId | Integer | The status of the order | Foreign key to orderStatus. Defaults to 1 if not supplied |
+| versionId | Integer | Version field for concurrency management | Required |
+
+### Business Rules
+
+1. **Blotter Assignment Rule**: On order creation, if no blotter is specified and there exists a blotter with:
+   - autoPopulate = true
+   - securityType matching the order's security's type
+   Then that blotter is automatically assigned to the order.
+
+2. **Order Status**: 
+   - New orders default to status 1 (new) if not specified
+   - Orders can only be deleted when in status 1 (new)
+
+3. **Timestamps**:
+   - orderTimestamp is automatically set on creation
+   - orderTimestamp cannot be modified by clients
+
+4. **Concurrency Control**:
+   - All modifications require the current version number
+   - Optimistic locking is enforced using the version field
+
+### Error Responses
+
+| Status Code | Description |
+|-------------|-------------|
+| 404 | Resource not found |
+| 409 | Concurrent modification conflict |
+| 400 | Invalid request (e.g., deleting non-new order) |

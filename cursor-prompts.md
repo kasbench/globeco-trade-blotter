@@ -140,3 +140,45 @@ Implemented the Security service components based on the requirements in require
 6. Added sample data in V11__sample_security_data.sql.
 
 7. Updated README.md with API documentation.
+
+## Order Service Implementation
+
+Implemented the Order service components based on the requirements in requirements-blotter.md:
+
+1. Created Order entity with fields:
+   - id (Integer)
+   - security (Security)
+   - blotter (Blotter)
+   - quantity (BigDecimal)
+   - orderTimestamp (OffsetDateTime)
+   - orderType (OrderType)
+   - orderStatus (OrderStatus)
+   - version (Integer)
+
+2. Created OrderRepository interface extending JpaRepository.
+
+3. Created OrderService interface and OrderServiceImpl with operations:
+   - findAll()
+   - findById()
+   - save() - with blotter assignment rule and default status
+   - update()
+   - delete() - with status check
+   - updateBlotter()
+   - updateStatus()
+
+4. Created OrderController with REST endpoints:
+   - GET /order
+   - GET /order/{orderId}
+   - POST /order
+   - PUT /order/{orderId}
+   - DELETE /order/{orderId}
+   - POST /order/{orderId}/blotter/{blotterId}
+   - POST /order/{orderId}/status/{statusId}
+
+5. Added comprehensive unit tests for all components.
+
+6. Added detailed API documentation to README.md including:
+   - API endpoints
+   - Data model
+   - Business rules
+   - Error responses
