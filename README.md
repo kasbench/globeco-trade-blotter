@@ -2,6 +2,8 @@
 
 A microservice for managing trade orders and allowing traders to work trades as part of the GlobeCo Suite.
 
+---
+
 ## Security Type API
 
 The Security Type API provides endpoints to manage security types in the system. Security types represent different classifications of financial instruments (e.g., common stock, preferred stock, corporate bonds, etc.).
