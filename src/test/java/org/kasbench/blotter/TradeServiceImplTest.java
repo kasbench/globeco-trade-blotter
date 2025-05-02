@@ -12,24 +12,41 @@ import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 @ExtendWith(MockitoExtension.class)
 class TradeServiceImplTest {
     @Mock
     private TradeRepository repository;
+    @Mock
+    private BlockAllocationService blockAllocationService;
     private TradeServiceImpl service;
     private Trade sampleTrade;
     private Block sampleBlock;
     private TradeType sampleTradeType;
+    private BlockAllocation alloc1;
+    private BlockAllocation alloc2;
 
     @BeforeEach
     void setUp() {
-        service = new TradeServiceImpl(repository);
+        MockitoAnnotations.openMocks(this);
+        service = new TradeServiceImpl(repository, blockAllocationService);
         sampleBlock = new Block();
         sampleBlock.setId(1);
         sampleTradeType = new TradeType();
         sampleTradeType.setId(2);
         sampleTrade = new Trade(1, sampleBlock, new BigDecimal("100.00"), sampleTradeType, new BigDecimal("50.00"), 1);
+        alloc1 = new BlockAllocation();
+        alloc1.setId(101);
+        alloc1.setBlock(sampleBlock);
+        alloc1.setQuantity(new BigDecimal("60.00"));
+        alloc2 = new BlockAllocation();
+        alloc2.setId(102);
+        alloc2.setBlock(sampleBlock);
+        alloc2.setQuantity(new BigDecimal("40.00"));
     }
 
     @Test
@@ -186,5 +203,46 @@ class TradeServiceImplTest {
         Trade tradeWithDiffVersion = new Trade(1, sampleBlock, new BigDecimal("100.00"), sampleTradeType, new BigDecimal("50.00"), 2);
         when(repository.findById(1)).thenReturn(Optional.of(tradeWithDiffVersion));
         assertThrows(ObjectOptimisticLockingFailureException.class, () -> service.fillQuantity(1, new BigDecimal("10.00"), 1));
+    }
+
+    @Test
+    void allocateProRata_Success() {
+        when(repository.findById(1)).thenReturn(Optional.of(sampleTrade));
+        when(blockAllocationService.findByBlockId(1)).thenReturn(Arrays.asList(alloc1, alloc2));
+        Trade result = service.allocateProRata(1, 1);
+        assertNotNull(result);
+        verify(blockAllocationService, times(2)).update(anyInt(), any(BlockAllocation.class));
+        // Check allocations sum to trade filledQuantity
+        BigDecimal sum = alloc1.getFilledQuantity().add(alloc2.getFilledQuantity());
+        assertEquals(sampleTrade.getFilledQuantity().setScale(8), sum.setScale(8));
+    }
+
+    @Test
+    void allocateProRata_TradeNotFound_Throws() {
+        when(repository.findById(1)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> service.allocateProRata(1, 1));
+    }
+
+    @Test
+    void allocateProRata_VersionMismatch_Throws() {
+        Trade tradeDiffVersion = new Trade(1, sampleBlock, new BigDecimal("100.00"), sampleTradeType, new BigDecimal("50.00"), 2);
+        when(repository.findById(1)).thenReturn(Optional.of(tradeDiffVersion));
+        assertThrows(ObjectOptimisticLockingFailureException.class, () -> service.allocateProRata(1, 1));
+    }
+
+    @Test
+    void allocateProRata_NoAllocations_Throws() {
+        when(repository.findById(1)).thenReturn(Optional.of(sampleTrade));
+        when(blockAllocationService.findByBlockId(1)).thenReturn(new ArrayList<>());
+        assertThrows(IllegalArgumentException.class, () -> service.allocateProRata(1, 1));
+    }
+
+    @Test
+    void allocateProRata_TotalQuantityZero_Throws() {
+        alloc1.setQuantity(BigDecimal.ZERO);
+        alloc2.setQuantity(BigDecimal.ZERO);
+        when(repository.findById(1)).thenReturn(Optional.of(sampleTrade));
+        when(blockAllocationService.findByBlockId(1)).thenReturn(Arrays.asList(alloc1, alloc2));
+        assertThrows(IllegalArgumentException.class, () -> service.allocateProRata(1, 1));
     }
 } 
