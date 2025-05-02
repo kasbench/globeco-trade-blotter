@@ -746,3 +746,97 @@ The Order service provides operations for managing trading orders in the GlobeCo
 | 404 | Resource not found |
 | 409 | Concurrent modification conflict |
 | 400 | Invalid request (e.g., deleting non-new order) |
+
+---
+
+## Block API
+
+The Block API provides endpoints to manage blocks, which are groups of orders for the same security and order type placed around the same time.
+
+### Endpoints
+
+#### Get All Blocks
+```http
+GET /block
+```
+Returns a list of all blocks.
+
+**Response**
+- `200 OK` - Returns an array of blocks
+
+#### Get Block by ID
+```http
+GET /block/{blockId}
+```
+Returns a specific block by ID.
+
+**Response**
+- `200 OK` - Returns the block
+- `404 Not Found` - If block doesn't exist
+
+#### Create Block
+```http
+POST /block
+```
+Creates a new block.
+
+**Request Body**
+```json
+{
+    "security": { ... },
+    "orderType": { ... },
+    "version": 1
+}
+```
+
+**Response**
+- `201 Created` - Returns the created block
+
+#### Update Block
+```http
+PUT /block/{blockId}
+```
+Updates an existing block.
+
+**Request Body**
+```json
+{
+    "security": { ... },
+    "orderType": { ... },
+    "version": 1
+}
+```
+
+**Response**
+- `200 OK` - Returns the updated block
+- `404 Not Found` - If block doesn't exist
+- `409 Conflict` - If version mismatch (optimistic locking)
+
+#### Delete Block
+```http
+DELETE /block/{blockId}?versionId={version}
+```
+Deletes a block. Requires the current version for optimistic locking.
+
+**Response**
+- `204 No Content` - Successfully deleted
+- `404 Not Found` - If block doesn't exist
+- `409 Conflict` - If version mismatch (optimistic locking)
+
+### Data Model
+
+| Field | Type | Description | Constraints |
+|-------|------|-------------|------------|
+| blockId | Integer | Unique identifier | Required |
+| security | Security | The security for the block | Required |
+| orderType | OrderType | The order type of the block | Required |
+| version | Integer | Version for optimistic locking | Required |
+
+### Error Handling
+
+The API uses standard HTTP status codes and includes descriptive error messages:
+
+- `404 Not Found` - Resource not found
+- `409 Conflict` - Optimistic locking failure
+- `400 Bad Request` - Invalid input
+- `500 Internal Server Error` - Server-side errors
