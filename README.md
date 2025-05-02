@@ -636,3 +636,57 @@ The API uses standard HTTP status codes and includes descriptive error messages:
 - `409 Conflict` - Optimistic locking failure
 - `400 Bad Request` - Invalid input
 - `500 Internal Server Error` - Server-side errors
+
+## Security Service
+
+The Security service provides CRUD operations for managing securities in the GlobeCo Trade Blotter system. A security represents an interest in equity, debt, or other rights.
+
+### API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | /security | Retrieves all securities |
+| GET | /security/{securityId} | Retrieves a specific security by ID |
+| POST | /security | Creates a new security |
+| PUT | /security/{securityId} | Updates an existing security |
+| DELETE | /security/{securityId} | Deletes a security (requires versionId parameter) |
+
+### Data Model
+
+| Field | Type | Description | Constraints |
+|-------|------|-------------|------------|
+| securityId | Integer | Immutable resource identifier | Required |
+| ticker | String | Trading abbreviation for security | Required, max 50 chars |
+| description | String | Description of the security | Max 200 chars |
+| securityTypeId | Integer | The security type of the security | Required |
+| versionId | Integer | Version field for concurrency management | Required |
+
+### Sample Request/Response
+
+#### Create Security
+```json
+POST /security
+{
+  "ticker": "IBM",
+  "description": "IBM Corporation",
+  "securityTypeId": 1
+}
+```
+
+#### Response
+```json
+{
+  "securityId": 1,
+  "ticker": "IBM",
+  "description": "IBM Corporation",
+  "securityTypeId": 1,
+  "versionId": 1
+}
+```
+
+### Error Responses
+
+| Status Code | Description |
+|-------------|-------------|
+| 404 | Security not found |
+| 409 | Concurrent modification detected |

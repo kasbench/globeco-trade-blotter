@@ -107,3 +107,36 @@ Created the following components:
    - V10__sample_order_status_data.sql
 
 8. Updated README.md with API documentation
+
+## Security Service Implementation
+
+Implemented the Security service components based on the requirements in requirements-blotter.md:
+
+1. Created Security entity with fields:
+   - id (Integer)
+   - ticker (String, max 50 chars)
+   - description (String, max 200 chars)
+   - securityType (SecurityType)
+   - version (Integer)
+
+2. Created SecurityRepository interface extending JpaRepository.
+
+3. Created SecurityService interface and SecurityServiceImpl with CRUD operations:
+   - findAll()
+   - findById()
+   - save()
+   - update()
+   - delete()
+
+4. Created SecurityController with REST endpoints:
+   - GET /security
+   - GET /security/{securityId}
+   - POST /security
+   - PUT /security/{securityId}
+   - DELETE /security/{securityId}
+
+5. Added comprehensive unit tests for all components.
+
+6. Added sample data in V11__sample_security_data.sql.
+
+7. Updated README.md with API documentation.
