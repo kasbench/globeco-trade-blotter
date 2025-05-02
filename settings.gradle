@@ -1,11 +1,10 @@
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
-    }
-}
-
-rootProject.name = 'blotter'
+// pluginManagement {
+//     repositories {
+//         gradlePluginPortal()
+//         mavenCentral()
+//     }
+// }
+rootProject.name = 'globeco-trade-blotter'
 
 
 

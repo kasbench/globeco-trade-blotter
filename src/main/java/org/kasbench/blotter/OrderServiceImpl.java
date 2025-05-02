@@ -53,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
             blotterRepository.findAll().stream()
                 .filter(blotter -> blotter.getAutoPopulate() && 
                         blotter.getSecurityTypeId() != null &&
-                        blotter.getSecurityTypeId().equals(order.getSecurity().getSecurityType()))
+                        blotter.getSecurityTypeId().equals(order.getSecurity().getSecurityType().getId()))
                 .findFirst()
                 .ifPresent(order::setBlotter);
         }

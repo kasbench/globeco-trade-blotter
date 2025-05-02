@@ -97,7 +97,8 @@ class OrderServiceImplTest {
         when(blotterRepository.findAll()).thenReturn(List.of(autoBlotter));
         when(repository.save(any(Order.class))).thenReturn(sampleOrder);
 
-        Order result = service.save(newOrder);
+        service.save(newOrder);
+
         verify(repository).save(any(Order.class));
         verify(blotterRepository).findAll();
     }
