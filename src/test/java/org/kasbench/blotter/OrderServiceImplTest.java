@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -98,7 +97,8 @@ class OrderServiceImplTest {
         when(blotterRepository.findAll()).thenReturn(List.of(autoBlotter));
         when(repository.save(any(Order.class))).thenReturn(sampleOrder);
 
-        Order result = service.save(newOrder);
+        service.save(newOrder);
+
         verify(repository).save(any(Order.class));
         verify(blotterRepository).findAll();
     }

@@ -1,0 +1,1567 @@
+openapi: 3.0.3
+info:
+  title: GlobeCo Trade Blotter API
+  version: 1.0.0
+  description: |
+    API for managing trade orders, blotters, blocks, allocations, and trades for the GlobeCo Suite.
+  contact:
+    name: Noah Krieger
+    email: noah@kasbench.org
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: /
+
+tags:
+  - name: Security Type
+  - name: Blotter
+  - name: Trade Type
+  - name: Destination
+  - name: Order Type
+  - name: Order Status
+  - name: Security
+  - name: Order
+  - name: Block
+  - name: Block Allocation
+  - name: Trade
+
+paths:
+  /securityType:
+    get:
+      tags: [Security Type]
+      summary: Get all security types
+      responses:
+        '200':
+          description: List of security types
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SecurityType'
+    post:
+      tags: [Security Type]
+      summary: Create a new security type
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SecurityType'
+      responses:
+        '201':
+          description: Created security type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecurityType'
+  /securityType/{securityTypeId}:
+    get:
+      tags: [Security Type]
+      summary: Get a security type by ID
+      parameters:
+        - in: path
+          name: securityTypeId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Security type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecurityType'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Security Type]
+      summary: Update a security type
+      parameters:
+        - in: path
+          name: securityTypeId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SecurityType'
+      responses:
+        '200':
+          description: Updated security type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecurityType'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags: [Security Type]
+      summary: Delete a security type
+      parameters:
+        - in: path
+          name: securityTypeId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: versionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /blotter:
+    get:
+      tags: [Blotter]
+      summary: Get all blotters
+      responses:
+        '200':
+          description: List of blotters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Blotter'
+    post:
+      tags: [Blotter]
+      summary: Create a new blotter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Blotter'
+      responses:
+        '201':
+          description: Created blotter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blotter'
+  /blotter/{blotterId}:
+    get:
+      tags: [Blotter]
+      summary: Get a blotter by ID
+      parameters:
+        - in: path
+          name: blotterId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Blotter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blotter'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Blotter]
+      summary: Update a blotter
+      parameters:
+        - in: path
+          name: blotterId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Blotter'
+      responses:
+        '200':
+          description: Updated blotter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blotter'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags: [Blotter]
+      summary: Delete a blotter
+      parameters:
+        - in: path
+          name: blotterId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: versionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /tradeType:
+    get:
+      tags: [Trade Type]
+      summary: Get all trade types
+      responses:
+        '200':
+          description: List of trade types
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TradeType'
+    post:
+      tags: [Trade Type]
+      summary: Create a new trade type
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TradeType'
+      responses:
+        '201':
+          description: Created trade type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeType'
+  /tradeType/{tradeTypeId}:
+    get:
+      tags: [Trade Type]
+      summary: Get a trade type by ID
+      parameters:
+        - in: path
+          name: tradeTypeId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Trade type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeType'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Trade Type]
+      summary: Update a trade type
+      parameters:
+        - in: path
+          name: tradeTypeId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TradeType'
+      responses:
+        '200':
+          description: Updated trade type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeType'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags: [Trade Type]
+      summary: Delete a trade type
+      parameters:
+        - in: path
+          name: tradeTypeId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: versionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /destination:
+    get:
+      tags: [Destination]
+      summary: Get all destinations
+      responses:
+        '200':
+          description: List of destinations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Destination'
+    post:
+      tags: [Destination]
+      summary: Create a new destination
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Destination'
+      responses:
+        '201':
+          description: Created destination
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Destination'
+  /destination/{destinationId}:
+    get:
+      tags: [Destination]
+      summary: Get a destination by ID
+      parameters:
+        - in: path
+          name: destinationId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Destination
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Destination'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Destination]
+      summary: Update a destination
+      parameters:
+        - in: path
+          name: destinationId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Destination'
+      responses:
+        '200':
+          description: Updated destination
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Destination'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags: [Destination]
+      summary: Delete a destination
+      parameters:
+        - in: path
+          name: destinationId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: versionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /orderType:
+    get:
+      tags: [Order Type]
+      summary: Get all order types
+      responses:
+        '200':
+          description: List of order types
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderType'
+    post:
+      tags: [Order Type]
+      summary: Create a new order type
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderType'
+      responses:
+        '201':
+          description: Created order type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderType'
+  /orderType/{orderTypeId}:
+    get:
+      tags: [Order Type]
+      summary: Get an order type by ID
+      parameters:
+        - in: path
+          name: orderTypeId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Order type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderType'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Order Type]
+      summary: Update an order type
+      parameters:
+        - in: path
+          name: orderTypeId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderType'
+      responses:
+        '200':
+          description: Updated order type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderType'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags: [Order Type]
+      summary: Delete an order type
+      parameters:
+        - in: path
+          name: orderTypeId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: versionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /orderStatus:
+    get:
+      tags: [Order Status]
+      summary: Get all order statuses
+      responses:
+        '200':
+          description: List of order statuses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderStatus'
+    post:
+      tags: [Order Status]
+      summary: Create a new order status
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderStatus'
+      responses:
+        '201':
+          description: Created order status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderStatus'
+  /orderStatus/{orderStatusId}:
+    get:
+      tags: [Order Status]
+      summary: Get an order status by ID
+      parameters:
+        - in: path
+          name: orderStatusId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Order status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderStatus'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Order Status]
+      summary: Update an order status
+      parameters:
+        - in: path
+          name: orderStatusId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderStatus'
+      responses:
+        '200':
+          description: Updated order status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderStatus'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags: [Order Status]
+      summary: Delete an order status
+      parameters:
+        - in: path
+          name: orderStatusId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: versionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /security:
+    get:
+      tags: [Security]
+      summary: Get all securities
+      responses:
+        '200':
+          description: List of securities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Security'
+    post:
+      tags: [Security]
+      summary: Create a new security
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Security'
+      responses:
+        '201':
+          description: Created security
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Security'
+  /security/{securityId}:
+    get:
+      tags: [Security]
+      summary: Get a security by ID
+      parameters:
+        - in: path
+          name: securityId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Security
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Security'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Security]
+      summary: Update a security
+      parameters:
+        - in: path
+          name: securityId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Security'
+      responses:
+        '200':
+          description: Updated security
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Security'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags: [Security]
+      summary: Delete a security
+      parameters:
+        - in: path
+          name: securityId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: versionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /order:
+    get:
+      tags: [Order]
+      summary: Get all orders
+      responses:
+        '200':
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+    post:
+      tags: [Order]
+      summary: Create a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '201':
+          description: Created order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+  /order/{orderId}:
+    get:
+      tags: [Order]
+      summary: Get an order by ID
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Order]
+      summary: Update an order
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '200':
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags: [Order]
+      summary: Delete an order (only if status is 1)
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: versionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Deleted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /order/{orderId}/blotter/{blotterId}:
+    post:
+      tags: [Order]
+      summary: Update the blotterId for an order
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: blotterId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: versionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    put:
+      tags: [Order]
+      summary: Update the blotterId for an order
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: blotterId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: versionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /order/{orderId}/status/{orderStatusId}:
+    post:
+      tags: [Order]
+      summary: Update the orderStatusId for an order
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: orderStatusId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: versionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    put:
+      tags: [Order]
+      summary: Update the orderStatusId for an order
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: orderStatusId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: versionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /block:
+    get:
+      tags: [Block]
+      summary: Get all blocks
+      responses:
+        '200':
+          description: List of blocks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Block'
+    post:
+      tags: [Block]
+      summary: Create a new block
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Block'
+      responses:
+        '201':
+          description: Created block
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Block'
+  /block/{blockId}:
+    get:
+      tags: [Block]
+      summary: Get a block by ID
+      parameters:
+        - in: path
+          name: blockId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Block
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Block'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Block]
+      summary: Update a block
+      parameters:
+        - in: path
+          name: blockId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Block'
+      responses:
+        '200':
+          description: Updated block
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Block'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags: [Block]
+      summary: Delete a block
+      parameters:
+        - in: path
+          name: blockId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: versionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /block/createBlock:
+    post:
+      tags: [Block]
+      summary: Create a block and associated block allocations from a list of orderIds
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+      responses:
+        '201':
+          description: Created block with allocations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Block'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /blockAllocation:
+    get:
+      tags: [Block Allocation]
+      summary: Get all block allocations
+      responses:
+        '200':
+          description: List of block allocations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BlockAllocation'
+    post:
+      tags: [Block Allocation]
+      summary: Create a new block allocation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlockAllocation'
+      responses:
+        '201':
+          description: Created block allocation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockAllocation'
+  /blockAllocation/block/{blockId}:
+    get:
+      tags: [Block Allocation]
+      summary: Get all block allocations for a block
+      parameters:
+        - in: path
+          name: blockId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of block allocations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BlockAllocation'
+  /blockAllocation/order/{orderId}:
+    get:
+      tags: [Block Allocation]
+      summary: Get all block allocations for an order
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of block allocations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BlockAllocation'
+  /blockAllocation/{blockAllocationId}:
+    get:
+      tags: [Block Allocation]
+      summary: Get a block allocation by ID
+      parameters:
+        - in: path
+          name: blockAllocationId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Block allocation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockAllocation'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Block Allocation]
+      summary: Update a block allocation
+      parameters:
+        - in: path
+          name: blockAllocationId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlockAllocation'
+      responses:
+        '200':
+          description: Updated block allocation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockAllocation'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags: [Block Allocation]
+      summary: Delete a block allocation
+      parameters:
+        - in: path
+          name: blockAllocationId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: versionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /blockAllocation/{blockAllocationId}/fill/{quantityFilled}:
+    post:
+      tags: [Block Allocation]
+      summary: Fill a block allocation
+      parameters:
+        - in: path
+          name: blockAllocationId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: quantityFilled
+          required: true
+          schema:
+            type: number
+            format: double
+        - in: query
+          name: versionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Updated block allocation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockAllocation'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /trade:
+    get:
+      tags: [Trade]
+      summary: Get all trades
+      responses:
+        '200':
+          description: List of trades
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Trade'
+    post:
+      tags: [Trade]
+      summary: Create a new trade
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Trade'
+      responses:
+        '201':
+          description: Created trade
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trade'
+  /trade/{tradeId}:
+    get:
+      tags: [Trade]
+      summary: Get a trade by ID
+      parameters:
+        - in: path
+          name: tradeId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Trade
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trade'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Trade]
+      summary: Update a trade
+      parameters:
+        - in: path
+          name: tradeId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Trade'
+      responses:
+        '200':
+          description: Updated trade
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trade'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags: [Trade]
+      summary: Delete a trade
+      parameters:
+        - in: path
+          name: tradeId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: versionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /trade/block/{blockId}:
+    get:
+      tags: [Trade]
+      summary: Get all trades for a block
+      parameters:
+        - in: path
+          name: blockId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of trades
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Trade'
+  /trade/{tradeId}/fill/{quantityFilled}:
+    post:
+      tags: [Trade]
+      summary: Fill a trade
+      parameters:
+        - in: path
+          name: tradeId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: quantityFilled
+          required: true
+          schema:
+            type: number
+            format: double
+        - in: query
+          name: versionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Updated trade
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trade'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /trade/allocateProRata:
+    post:
+      tags: [Trade]
+      summary: Pro rata allocation of trade.filledQuantity to block allocations of the referenced block
+      parameters:
+        - in: query
+          name: tradeId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: versionId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Updated trade with pro rata allocation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trade'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+components:
+  schemas:
+    SecurityType:
+      type: object
+      properties:
+        securityTypeId:
+          type: integer
+        abbreviation:
+          type: string
+        description:
+          type: string
+        versionId:
+          type: integer
+      required: [securityTypeId, abbreviation, description, versionId]
+    Blotter:
+      type: object
+      properties:
+        blotterId:
+          type: integer
+        name:
+          type: string
+        autoPopulate:
+          type: boolean
+        securityTypeId:
+          type: integer
+          nullable: true
+        versionId:
+          type: integer
+      required: [blotterId, name, autoPopulate, versionId]
+    TradeType:
+      type: object
+      properties:
+        tradeTypeId:
+          type: integer
+        abbreviation:
+          type: string
+        description:
+          type: string
+        versionId:
+          type: integer
+      required: [tradeTypeId, abbreviation, description, versionId]
+    Destination:
+      type: object
+      properties:
+        destinationId:
+          type: integer
+        abbreviation:
+          type: string
+        description:
+          type: string
+        versionId:
+          type: integer
+      required: [destinationId, abbreviation, description, versionId]
+    OrderType:
+      type: object
+      properties:
+        orderTypeId:
+          type: integer
+        abbreviation:
+          type: string
+        description:
+          type: string
+        versionId:
+          type: integer
+      required: [orderTypeId, abbreviation, description, versionId]
+    OrderStatus:
+      type: object
+      properties:
+        orderStatusId:
+          type: integer
+        abbreviation:
+          type: string
+        description:
+          type: string
+        versionId:
+          type: integer
+      required: [orderStatusId, abbreviation, description, versionId]
+    Security:
+      type: object
+      properties:
+        securityId:
+          type: integer
+        abbreviation:
+          type: string
+        description:
+          type: string
+        versionId:
+          type: integer
+      required: [securityId, abbreviation, description, versionId]
+    Order:
+      type: object
+      properties:
+        orderId:
+          type: integer
+        securityId:
+          type: integer
+        blotterId:
+          type: integer
+          nullable: true
+        quantity:
+          type: number
+          format: double
+        orderTimestamp:
+          type: string
+          format: date-time
+        orderTypeId:
+          type: integer
+        orderStatusId:
+          type: integer
+        versionId:
+          type: integer
+      required: [orderId, securityId, quantity, orderTypeId, orderStatusId, versionId]
+    Block:
+      type: object
+      properties:
+        blockId:
+          type: integer
+        securityId:
+          type: integer
+        orderTypeId:
+          type: integer
+        versionId:
+          type: integer
+      required: [blockId, securityId, orderTypeId, versionId]
+    BlockAllocation:
+      type: object
+      properties:
+        blockAllocationId:
+          type: integer
+        orderId:
+          type: integer
+        blockId:
+          type: integer
+        quantity:
+          type: number
+          format: double
+        filledQuantity:
+          type: number
+          format: double
+        versionId:
+          type: integer
+      required: [blockAllocationId, orderId, blockId, quantity, filledQuantity, versionId]
+    Trade:
+      type: object
+      properties:
+        tradeId:
+          type: integer
+        blockId:
+          type: integer
+        quantity:
+          type: number
+          format: double
+        tradeTypeId:
+          type: integer
+        filledQuantity:
+          type: number
+          format: double
+        versionId:
+          type: integer
+      required: [tradeId, blockId, quantity, tradeTypeId, filledQuantity, versionId]
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+    Conflict:
+      description: Optimistic locking failure
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+    BadRequest:
+      description: Invalid input
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string 
