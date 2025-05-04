@@ -64,8 +64,28 @@ public class OrderController {
     @PutMapping("/{orderId}")
     public Order updateOrder(
             @PathVariable Integer orderId,
-            @RequestBody Order order) {
-        return service.update(orderId, order);
+            @RequestBody OrderRequestDTO dto) {
+        Order existing = service.findById(orderId)
+            .orElseThrow(() -> new EntityNotFoundException("Order not found with id: " + orderId));
+        existing.setSecurity(securityRepository.findById(dto.getSecurityId())
+            .orElseThrow(() -> new EntityNotFoundException("Security not found with id: " + dto.getSecurityId())));
+        if (dto.getBlotterId() != null) {
+            existing.setBlotter(blotterRepository.findById(dto.getBlotterId())
+                .orElseThrow(() -> new EntityNotFoundException("Blotter not found with id: " + dto.getBlotterId())));
+        } else {
+            existing.setBlotter(null);
+        }
+        existing.setQuantity(dto.getQuantity());
+        existing.setOrderType(orderTypeRepository.findById(dto.getOrderTypeId())
+            .orElseThrow(() -> new EntityNotFoundException("OrderType not found with id: " + dto.getOrderTypeId())));
+        if (dto.getOrderStatusId() != null) {
+            existing.setOrderStatus(orderStatusRepository.findById(dto.getOrderStatusId())
+                .orElseThrow(() -> new EntityNotFoundException("OrderStatus not found with id: " + dto.getOrderStatusId())));
+        } else {
+            existing.setOrderStatus(null);
+        }
+        existing.setVersion(dto.getVersion());
+        return service.update(orderId, existing);
     }
 
     @DeleteMapping("/{orderId}")

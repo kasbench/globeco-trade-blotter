@@ -111,18 +111,47 @@ class OrderControllerTest {
 
     @Test
     void updateOrder_WhenExists_UpdatesAndReturnsOrder() {
-        when(service.update(1, sampleOrder)).thenReturn(sampleOrder);
-        Order result = controller.updateOrder(1, sampleOrder);
+        OrderRequestDTO dto = new OrderRequestDTO();
+        dto.setSecurityId(1);
+        dto.setBlotterId(1);
+        dto.setQuantity(new BigDecimal("100.00"));
+        dto.setOrderTypeId(1);
+        dto.setOrderStatusId(1);
+        dto.setVersion(1);
+
+        when(service.findById(1)).thenReturn(Optional.of(sampleOrder));
+        when(securityRepository.findById(1)).thenReturn(Optional.of(sampleSecurity));
+        when(blotterRepository.findById(1)).thenReturn(Optional.of(sampleBlotter));
+        when(orderTypeRepository.findById(1)).thenReturn(Optional.of(sampleOrderType));
+        when(orderStatusRepository.findById(1)).thenReturn(Optional.of(sampleOrderStatus));
+        when(service.update(eq(1), any(Order.class))).thenReturn(sampleOrder);
+
+        Order result = controller.updateOrder(1, dto);
+
         assertEquals(sampleOrder, result);
-        verify(service).update(1, sampleOrder);
+        verify(service).findById(1);
+        verify(securityRepository).findById(1);
+        verify(blotterRepository).findById(1);
+        verify(orderTypeRepository).findById(1);
+        verify(orderStatusRepository).findById(1);
+        verify(service).update(eq(1), any(Order.class));
     }
 
     @Test
     void updateOrder_WhenNotExists_ThrowsException() {
-        when(service.update(1, sampleOrder)).thenThrow(new EntityNotFoundException("Not found"));
+        OrderRequestDTO dto = new OrderRequestDTO();
+        dto.setSecurityId(1);
+        dto.setBlotterId(1);
+        dto.setQuantity(new BigDecimal("100.00"));
+        dto.setOrderTypeId(1);
+        dto.setOrderStatusId(1);
+        dto.setVersion(1);
+
+        when(service.findById(1)).thenReturn(Optional.empty());
+
         assertThrows(EntityNotFoundException.class,
-                () -> controller.updateOrder(1, sampleOrder));
-        verify(service).update(1, sampleOrder);
+                () -> controller.updateOrder(1, dto));
+        verify(service).findById(1);
     }
 
     @Test
