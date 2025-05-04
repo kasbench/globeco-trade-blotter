@@ -8,15 +8,24 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/order")
 public class OrderController {
     private final OrderService service;
+    private final SecurityRepository securityRepository;
+    private final BlotterRepository blotterRepository;
+    private final OrderTypeRepository orderTypeRepository;
+    private final OrderStatusRepository orderStatusRepository;
 
     @Autowired
-    public OrderController(OrderService service) {
+    public OrderController(OrderService service, SecurityRepository securityRepository, BlotterRepository blotterRepository, OrderTypeRepository orderTypeRepository, OrderStatusRepository orderStatusRepository) {
         this.service = service;
+        this.securityRepository = securityRepository;
+        this.blotterRepository = blotterRepository;
+        this.orderTypeRepository = orderTypeRepository;
+        this.orderStatusRepository = orderStatusRepository;
     }
 
     @GetMapping
@@ -33,7 +42,22 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Order createOrder(@RequestBody Order order) {
+    public Order createOrder(@RequestBody OrderRequestDTO dto) {
+        Order order = new Order();
+        order.setSecurity(securityRepository.findById(dto.getSecurityId())
+            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Security not found with id: " + dto.getSecurityId())));
+        if (dto.getBlotterId() != null) {
+            order.setBlotter(blotterRepository.findById(dto.getBlotterId())
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Blotter not found with id: " + dto.getBlotterId())));
+        }
+        order.setQuantity(dto.getQuantity());
+        order.setOrderType(orderTypeRepository.findById(dto.getOrderTypeId())
+            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("OrderType not found with id: " + dto.getOrderTypeId())));
+        if (dto.getOrderStatusId() != null) {
+            order.setOrderStatus(orderStatusRepository.findById(dto.getOrderStatusId())
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("OrderStatus not found with id: " + dto.getOrderStatusId())));
+        }
+        order.setVersion(dto.getVersion());
         return service.save(order);
     }
 

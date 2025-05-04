@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "\"order\"", schema = "public")
@@ -14,10 +15,12 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "security_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Security security;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "blotter_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Blotter blotter;
 
     @Column(precision = 18, scale = 8)
@@ -28,10 +31,12 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_type_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private OrderType orderType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_status_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private OrderStatus orderStatus;
 
     @Version

@@ -720,7 +720,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Order'
+              $ref: '#/components/schemas/OrderRequestDTO'
       responses:
         '201':
           description: Created order
@@ -1549,6 +1549,24 @@ components:
         securityTypeId:
           type: integer
       required: [ticker, version, securityTypeId]
+    OrderRequestDTO:
+      type: object
+      properties:
+        securityId:
+          type: integer
+        blotterId:
+          type: integer
+          nullable: true
+        quantity:
+          type: number
+          format: double
+        orderTypeId:
+          type: integer
+        orderStatusId:
+          type: integer
+        version:
+          type: integer
+      required: [securityId, quantity, orderTypeId, version]
   responses:
     NotFound:
       description: Resource not found

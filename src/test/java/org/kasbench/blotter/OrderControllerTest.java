@@ -23,6 +23,14 @@ class OrderControllerTest {
 
     @Mock
     private OrderService service;
+    @Mock
+    private SecurityRepository securityRepository;
+    @Mock
+    private BlotterRepository blotterRepository;
+    @Mock
+    private OrderTypeRepository orderTypeRepository;
+    @Mock
+    private OrderStatusRepository orderStatusRepository;
 
     private OrderController controller;
     private Order sampleOrder;
@@ -34,7 +42,9 @@ class OrderControllerTest {
 
     @BeforeEach
     void setUp() {
-        controller = new OrderController(service);
+        controller = new OrderController(
+            service, securityRepository, blotterRepository, orderTypeRepository, orderStatusRepository
+        );
         
         sampleSecurityType = new SecurityType(1, "STK", "Stock", 1);
         sampleSecurity = new Security(1, "IBM", "IBM Corporation", sampleSecurityType, 1);
@@ -75,10 +85,28 @@ class OrderControllerTest {
 
     @Test
     void createOrder_CreatesAndReturnsOrder() {
-        when(service.save(sampleOrder)).thenReturn(sampleOrder);
-        Order result = controller.createOrder(sampleOrder);
+        OrderRequestDTO dto = new OrderRequestDTO();
+        dto.setSecurityId(1);
+        dto.setBlotterId(1);
+        dto.setQuantity(new BigDecimal("100.00"));
+        dto.setOrderTypeId(1);
+        dto.setOrderStatusId(1);
+        dto.setVersion(1);
+
+        when(securityRepository.findById(1)).thenReturn(Optional.of(sampleSecurity));
+        when(blotterRepository.findById(1)).thenReturn(Optional.of(sampleBlotter));
+        when(orderTypeRepository.findById(1)).thenReturn(Optional.of(sampleOrderType));
+        when(orderStatusRepository.findById(1)).thenReturn(Optional.of(sampleOrderStatus));
+        when(service.save(any(Order.class))).thenReturn(sampleOrder);
+
+        Order result = controller.createOrder(dto);
+
         assertEquals(sampleOrder, result);
-        verify(service).save(sampleOrder);
+        verify(securityRepository).findById(1);
+        verify(blotterRepository).findById(1);
+        verify(orderTypeRepository).findById(1);
+        verify(orderStatusRepository).findById(1);
+        verify(service).save(any(Order.class));
     }
 
     @Test
