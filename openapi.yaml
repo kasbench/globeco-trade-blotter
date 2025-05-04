@@ -624,7 +624,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Security'
+              $ref: '#/components/schemas/SecurityRequestDTO'
       responses:
         '201':
           description: Created security
@@ -1537,6 +1537,18 @@ components:
         versionId:
           type: integer
       required: [tradeId, blockId, quantity, tradeTypeId, filledQuantity, versionId]
+    SecurityRequestDTO:
+      type: object
+      properties:
+        ticker:
+          type: string
+        description:
+          type: string
+        version:
+          type: integer
+        securityTypeId:
+          type: integer
+      required: [ticker, version, securityTypeId]
   responses:
     NotFound:
       description: Resource not found

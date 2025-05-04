@@ -21,6 +21,8 @@ class SecurityControllerTest {
 
     @Mock
     private SecurityService service;
+    @Mock
+    private SecurityTypeRepository securityTypeRepository;
 
     private SecurityController controller;
     private Security sampleSecurity;
@@ -28,7 +30,7 @@ class SecurityControllerTest {
 
     @BeforeEach
     void setUp() {
-        controller = new SecurityController(service);
+        controller = new SecurityController(service, securityTypeRepository);
         sampleSecurityType = new SecurityType(1, "STK", "Stock", 1);
         sampleSecurity = new Security(1, "IBM", "IBM Corporation", sampleSecurityType, 1);
     }
@@ -62,10 +64,20 @@ class SecurityControllerTest {
 
     @Test
     void createSecurity_CreatesAndReturnsSecurity() {
-        when(service.save(sampleSecurity)).thenReturn(sampleSecurity);
-        Security result = controller.createSecurity(sampleSecurity);
+        SecurityRequestDTO dto = new SecurityRequestDTO();
+        dto.setTicker("IBM");
+        dto.setDescription("IBM Corporation");
+        dto.setVersion(1);
+        dto.setSecurityTypeId(1);
+
+        when(securityTypeRepository.findById(1)).thenReturn(Optional.of(sampleSecurityType));
+        when(service.save(any(Security.class))).thenReturn(sampleSecurity);
+
+        Security result = controller.createSecurity(dto);
+
         assertEquals(sampleSecurity, result);
-        verify(service).save(sampleSecurity);
+        verify(securityTypeRepository).findById(1);
+        verify(service).save(any(Security.class));
     }
 
     @Test

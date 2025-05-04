@@ -63,7 +63,7 @@ CREATE TABLE public."order" (
     blotter_id integer,
     security_id integer NOT NULL,
     quantity decimal(18,8),
-    order_timestamp timestamptz,
+    order_timestamp timestamptz DEFAULT CURRENT_TIMESTAMP,
     version integer NOT NULL DEFAULT 0,
     order_type_id integer NOT NULL,
     order_status_id integer,

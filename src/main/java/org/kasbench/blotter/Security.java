@@ -2,6 +2,7 @@ package org.kasbench.blotter;
 
 import jakarta.persistence.*;
 import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "security", schema = "public")
@@ -18,6 +19,7 @@ public class Security {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "security_type_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private SecurityType securityType;
 
     @Version

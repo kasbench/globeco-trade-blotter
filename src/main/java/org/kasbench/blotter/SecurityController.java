@@ -13,10 +13,12 @@ import java.util.List;
 @RequestMapping("/security")
 public class SecurityController {
     private final SecurityService service;
+    private final SecurityTypeRepository securityTypeRepository;
 
     @Autowired
-    public SecurityController(SecurityService service) {
+    public SecurityController(SecurityService service, SecurityTypeRepository securityTypeRepository) {
         this.service = service;
+        this.securityTypeRepository = securityTypeRepository;
     }
 
     @GetMapping
@@ -33,7 +35,14 @@ public class SecurityController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Security createSecurity(@RequestBody Security security) {
+    public Security createSecurity(@RequestBody SecurityRequestDTO dto) {
+        SecurityType securityType = securityTypeRepository.findById(dto.getSecurityTypeId())
+            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("SecurityType not found with id: " + dto.getSecurityTypeId()));
+        Security security = new Security();
+        security.setTicker(dto.getTicker());
+        security.setDescription(dto.getDescription());
+        security.setVersion(dto.getVersion());
+        security.setSecurityType(securityType);
         return service.save(security);
     }
 
