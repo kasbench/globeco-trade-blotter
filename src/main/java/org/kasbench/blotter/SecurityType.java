@@ -7,6 +7,7 @@ import java.util.Objects;
 @Table(name = "security_type", schema = "public")
 public class SecurityType {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(length = 10, nullable = false)

@@ -4,8 +4,20 @@
 
 SET search_path TO public;
 
+CREATE SEQUENCE security_type_sequence START WITH 100;
+
+CREATE SEQUENCE order_status_sequence START WITH 100;
+
+CREATE SEQUENCE trade_type_sequence START WITH 100;
+
+CREATE SEQUENCE destination_sequence START WITH 100;
+
+CREATE SEQUENCE order_type_sequence START WITH 100;
+
+
+
 CREATE TABLE public.security_type (
-    id integer NOT NULL,
+    id integer DEFAULT nextval('security_type_sequence'),
     abbreviation varchar(10) NOT NULL,
     description varchar(100) NOT NULL,
     version integer NOT NULL DEFAULT 0,
@@ -31,7 +43,7 @@ CREATE TABLE public.security (
 );
 
 CREATE TABLE public.order_type (
-    id integer NOT NULL,
+    id integer DEFAULT nextval('order_type_sequence') NOT NULL,
     abbreviation varchar(10) NOT NULL,
     description varchar(60) NOT NULL,
     version integer NOT NULL DEFAULT 0,
@@ -39,7 +51,7 @@ CREATE TABLE public.order_type (
 );
 
 CREATE TABLE public.order_status (
-    id integer NOT NULL,
+    id integer DEFAULT nextval('order_status_sequence') NOT NULL,
     abbreviation varchar(20) NOT NULL,
     description varchar(60) NOT NULL,
     version integer NOT NULL DEFAULT 0,
@@ -67,7 +79,7 @@ CREATE TABLE public.block (
 );
 
 CREATE TABLE public.destination (
-    id integer NOT NULL,
+    id integer DEFAULT nextval('destination_sequence') NOT NULL,
     abbreviation varchar(20) NOT NULL,
     description varchar(100) NOT NULL,
     version integer NOT NULL DEFAULT 0,
@@ -75,7 +87,7 @@ CREATE TABLE public.destination (
 );
 
 CREATE TABLE public.trade_type (
-    id integer NOT NULL,
+    id integer DEFAULT nextval('trade_type_sequence') NOT NULL,
     abbreviation varchar(10) NOT NULL,
     description varchar(60) NOT NULL,
     version integer NOT NULL DEFAULT 0,

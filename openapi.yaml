@@ -56,13 +56,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SecurityType'
-  /securityType/{securityTypeId}:
+  /securityType/{id}:
     get:
       tags: [Security Type]
       summary: Get a security type by ID
       parameters:
         - in: path
-          name: securityTypeId
+          name: id
           required: true
           schema:
             type: integer
@@ -80,7 +80,7 @@ paths:
       summary: Update a security type
       parameters:
         - in: path
-          name: securityTypeId
+          name: id
           required: true
           schema:
             type: integer
@@ -106,12 +106,12 @@ paths:
       summary: Delete a security type
       parameters:
         - in: path
-          name: securityTypeId
+          name: id
           required: true
           schema:
             type: integer
         - in: query
-          name: versionId
+          name: version
           required: true
           schema:
             type: integer
@@ -248,13 +248,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TradeType'
-  /tradeType/{tradeTypeId}:
+  /tradeType/{id}:
     get:
       tags: [Trade Type]
       summary: Get a trade type by ID
       parameters:
         - in: path
-          name: tradeTypeId
+          name: id
           required: true
           schema:
             type: integer
@@ -272,7 +272,7 @@ paths:
       summary: Update a trade type
       parameters:
         - in: path
-          name: tradeTypeId
+          name: id
           required: true
           schema:
             type: integer
@@ -298,12 +298,12 @@ paths:
       summary: Delete a trade type
       parameters:
         - in: path
-          name: tradeTypeId
+          name: id
           required: true
           schema:
             type: integer
         - in: query
-          name: versionId
+          name: version
           required: true
           schema:
             type: integer
@@ -344,13 +344,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Destination'
-  /destination/{destinationId}:
+  /destination/{id}:
     get:
       tags: [Destination]
       summary: Get a destination by ID
       parameters:
         - in: path
-          name: destinationId
+          name: id
           required: true
           schema:
             type: integer
@@ -368,7 +368,7 @@ paths:
       summary: Update a destination
       parameters:
         - in: path
-          name: destinationId
+          name: id
           required: true
           schema:
             type: integer
@@ -394,12 +394,12 @@ paths:
       summary: Delete a destination
       parameters:
         - in: path
-          name: destinationId
+          name: id
           required: true
           schema:
             type: integer
         - in: query
-          name: versionId
+          name: version
           required: true
           schema:
             type: integer
@@ -440,13 +440,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OrderType'
-  /orderType/{orderTypeId}:
+  /orderType/{id}:
     get:
       tags: [Order Type]
       summary: Get an order type by ID
       parameters:
         - in: path
-          name: orderTypeId
+          name: id
           required: true
           schema:
             type: integer
@@ -464,7 +464,7 @@ paths:
       summary: Update an order type
       parameters:
         - in: path
-          name: orderTypeId
+          name: id
           required: true
           schema:
             type: integer
@@ -490,12 +490,12 @@ paths:
       summary: Delete an order type
       parameters:
         - in: path
-          name: orderTypeId
+          name: id
           required: true
           schema:
             type: integer
         - in: query
-          name: versionId
+          name: version
           required: true
           schema:
             type: integer
@@ -536,13 +536,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OrderStatus'
-  /orderStatus/{orderStatusId}:
+  /orderStatus/{id}:
     get:
       tags: [Order Status]
       summary: Get an order status by ID
       parameters:
         - in: path
-          name: orderStatusId
+          name: id
           required: true
           schema:
             type: integer
@@ -560,7 +560,7 @@ paths:
       summary: Update an order status
       parameters:
         - in: path
-          name: orderStatusId
+          name: id
           required: true
           schema:
             type: integer
@@ -586,12 +586,12 @@ paths:
       summary: Delete an order status
       parameters:
         - in: path
-          name: orderStatusId
+          name: id
           required: true
           schema:
             type: integer
         - in: query
-          name: versionId
+          name: version
           required: true
           schema:
             type: integer
@@ -1382,19 +1382,19 @@ components:
     SecurityType:
       type: object
       properties:
-        securityTypeId:
+        id:
           type: integer
         abbreviation:
           type: string
         description:
           type: string
-        versionId:
+        version:
           type: integer
-      required: [securityTypeId, abbreviation, description, versionId]
+      required: [id, abbreviation, description, version]
     Blotter:
       type: object
       properties:
-        blotterId:
+        id:
           type: integer
         name:
           type: string
@@ -1403,57 +1403,57 @@ components:
         securityTypeId:
           type: integer
           nullable: true
-        versionId:
+        version:
           type: integer
-      required: [blotterId, name, autoPopulate, versionId]
+      required: [id, name, autoPopulate, version]
     TradeType:
       type: object
       properties:
-        tradeTypeId:
+        id:
           type: integer
         abbreviation:
           type: string
         description:
           type: string
-        versionId:
+        version:
           type: integer
-      required: [tradeTypeId, abbreviation, description, versionId]
+      required: [id, abbreviation, description, version]
     Destination:
       type: object
       properties:
-        destinationId:
+        id:
           type: integer
         abbreviation:
           type: string
         description:
           type: string
-        versionId:
+        version:
           type: integer
-      required: [destinationId, abbreviation, description, versionId]
+      required: [id, abbreviation, description, version]
     OrderType:
       type: object
       properties:
-        orderTypeId:
+        id:
           type: integer
         abbreviation:
           type: string
         description:
           type: string
-        versionId:
+        version:
           type: integer
-      required: [orderTypeId, abbreviation, description, versionId]
+      required: [id, abbreviation, description, version]
     OrderStatus:
       type: object
       properties:
-        orderStatusId:
+        id:
           type: integer
         abbreviation:
           type: string
         description:
           type: string
-        versionId:
+        version:
           type: integer
-      required: [orderStatusId, abbreviation, description, versionId]
+      required: [id, abbreviation, description, version]
     Security:
       type: object
       properties:

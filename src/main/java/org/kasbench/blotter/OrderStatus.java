@@ -7,6 +7,7 @@ import java.util.Objects;
 @Table(name = "order_status", schema = "public")
 public class OrderStatus {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(length = 20, nullable = false)

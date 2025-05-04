@@ -7,6 +7,7 @@ import java.util.Objects;
 @Table(name = "trade_type", schema = "public")
 public class TradeType {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(length = 10, nullable = false)
