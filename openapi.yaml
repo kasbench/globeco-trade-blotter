@@ -1223,7 +1223,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Trade'
+              $ref: '#/components/schemas/TradeRequestDTO'
       responses:
         '201':
           description: Created trade
@@ -1264,7 +1264,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Trade'
+              $ref: '#/components/schemas/TradeRequestDTO'
       responses:
         '200':
           description: Updated trade
@@ -1567,6 +1567,22 @@ components:
         version:
           type: integer
       required: [securityId, quantity, orderTypeId, version]
+    TradeRequestDTO:
+      type: object
+      properties:
+        blockId:
+          type: integer
+        quantity:
+          type: number
+          format: double
+        tradeTypeId:
+          type: integer
+        filledQuantity:
+          type: number
+          format: double
+        version:
+          type: integer
+      required: [blockId, quantity, tradeTypeId, version]
   responses:
     NotFound:
       description: Resource not found

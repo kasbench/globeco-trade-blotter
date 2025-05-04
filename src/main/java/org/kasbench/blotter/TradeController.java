@@ -13,10 +13,14 @@ import java.util.List;
 @RequestMapping("/trade")
 public class TradeController {
     private final TradeService service;
+    private final BlockRepository blockRepository;
+    private final TradeTypeRepository tradeTypeRepository;
 
     @Autowired
-    public TradeController(TradeService service) {
+    public TradeController(TradeService service, BlockRepository blockRepository, TradeTypeRepository tradeTypeRepository) {
         this.service = service;
+        this.blockRepository = blockRepository;
+        this.tradeTypeRepository = tradeTypeRepository;
     }
 
     @GetMapping
@@ -38,15 +42,32 @@ public class TradeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Trade createTrade(@RequestBody Trade trade) {
+    public Trade createTrade(@RequestBody TradeRequestDTO dto) {
+        Trade trade = new Trade();
+        trade.setBlock(blockRepository.findById(dto.getBlockId())
+            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Block not found with id: " + dto.getBlockId())));
+        trade.setQuantity(dto.getQuantity());
+        trade.setTradeType(tradeTypeRepository.findById(dto.getTradeTypeId())
+            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("TradeType not found with id: " + dto.getTradeTypeId())));
+        trade.setFilledQuantity(dto.getFilledQuantity() != null ? dto.getFilledQuantity() : BigDecimal.ZERO);
+        trade.setVersion(dto.getVersion());
         return service.save(trade);
     }
 
     @PutMapping("/{tradeId}")
     public Trade updateTrade(
             @PathVariable Integer tradeId,
-            @RequestBody Trade trade) {
-        return service.update(tradeId, trade);
+            @RequestBody TradeRequestDTO dto) {
+        Trade existing = service.findById(tradeId)
+            .orElseThrow(() -> new EntityNotFoundException("Trade not found with id: " + tradeId));
+        existing.setBlock(blockRepository.findById(dto.getBlockId())
+            .orElseThrow(() -> new EntityNotFoundException("Block not found with id: " + dto.getBlockId())));
+        existing.setQuantity(dto.getQuantity());
+        existing.setTradeType(tradeTypeRepository.findById(dto.getTradeTypeId())
+            .orElseThrow(() -> new EntityNotFoundException("TradeType not found with id: " + dto.getTradeTypeId())));
+        existing.setFilledQuantity(dto.getFilledQuantity() != null ? dto.getFilledQuantity() : BigDecimal.ZERO);
+        existing.setVersion(dto.getVersion());
+        return service.update(tradeId, existing);
     }
 
     @DeleteMapping("/{tradeId}")

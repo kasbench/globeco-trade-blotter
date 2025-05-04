@@ -14,11 +14,17 @@ import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
 
 @ExtendWith(MockitoExtension.class)
 class TradeControllerTest {
     @Mock
     private TradeService service;
+    @Mock
+    private BlockRepository blockRepository;
+    @Mock
+    private TradeTypeRepository tradeTypeRepository;
     private TradeController controller;
     private Trade sampleTrade;
     private Block sampleBlock;
@@ -26,7 +32,8 @@ class TradeControllerTest {
 
     @BeforeEach
     void setUp() {
-        controller = new TradeController(service);
+        MockitoAnnotations.openMocks(this);
+        controller = new TradeController(service, blockRepository, tradeTypeRepository);
         sampleBlock = new Block();
         sampleBlock.setId(1);
         sampleTradeType = new TradeType();
@@ -72,26 +79,54 @@ class TradeControllerTest {
 
     @Test
     void createTrade_CreatesAndReturnsTrade() {
-        when(service.save(sampleTrade)).thenReturn(sampleTrade);
-        Trade result = controller.createTrade(sampleTrade);
+        TradeRequestDTO dto = new TradeRequestDTO();
+        dto.setBlockId(1);
+        dto.setQuantity(new BigDecimal("100.00"));
+        dto.setTradeTypeId(2);
+        dto.setFilledQuantity(new BigDecimal("50.00"));
+        dto.setVersion(1);
+        when(blockRepository.findById(1)).thenReturn(Optional.of(sampleBlock));
+        when(tradeTypeRepository.findById(2)).thenReturn(Optional.of(sampleTradeType));
+        when(service.save(any(Trade.class))).thenReturn(sampleTrade);
+        Trade result = controller.createTrade(dto);
         assertEquals(sampleTrade, result);
-        verify(service).save(sampleTrade);
+        verify(blockRepository).findById(1);
+        verify(tradeTypeRepository).findById(2);
+        verify(service).save(any(Trade.class));
     }
 
     @Test
     void updateTrade_WhenExists_UpdatesAndReturnsTrade() {
-        when(service.update(1, sampleTrade)).thenReturn(sampleTrade);
-        Trade result = controller.updateTrade(1, sampleTrade);
+        TradeRequestDTO dto = new TradeRequestDTO();
+        dto.setBlockId(1);
+        dto.setQuantity(new BigDecimal("100.00"));
+        dto.setTradeTypeId(2);
+        dto.setFilledQuantity(new BigDecimal("50.00"));
+        dto.setVersion(1);
+        when(service.findById(1)).thenReturn(Optional.of(sampleTrade));
+        when(blockRepository.findById(1)).thenReturn(Optional.of(sampleBlock));
+        when(tradeTypeRepository.findById(2)).thenReturn(Optional.of(sampleTradeType));
+        when(service.update(eq(1), any(Trade.class))).thenReturn(sampleTrade);
+        Trade result = controller.updateTrade(1, dto);
         assertEquals(sampleTrade, result);
-        verify(service).update(1, sampleTrade);
+        verify(service).findById(1);
+        verify(blockRepository).findById(1);
+        verify(tradeTypeRepository).findById(2);
+        verify(service).update(eq(1), any(Trade.class));
     }
 
     @Test
     void updateTrade_WhenNotExists_ThrowsException() {
-        when(service.update(1, sampleTrade)).thenThrow(new EntityNotFoundException("Not found"));
+        TradeRequestDTO dto = new TradeRequestDTO();
+        dto.setBlockId(1);
+        dto.setQuantity(new BigDecimal("100.00"));
+        dto.setTradeTypeId(2);
+        dto.setFilledQuantity(new BigDecimal("50.00"));
+        dto.setVersion(1);
+        when(service.findById(1)).thenReturn(Optional.empty());
         assertThrows(EntityNotFoundException.class,
-                () -> controller.updateTrade(1, sampleTrade));
-        verify(service).update(1, sampleTrade);
+                () -> controller.updateTrade(1, dto));
+        verify(service).findById(1);
     }
 
     @Test
