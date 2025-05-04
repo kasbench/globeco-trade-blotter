@@ -9,8 +9,9 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
+
 @RestController
-@RequestMapping("/order-type")
+@RequestMapping("/orderType")
 public class OrderTypeController {
     private final OrderTypeService service;
 

@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 @RestController
-@RequestMapping("/order-status")
+@RequestMapping("/orderStatus")
 public class OrderStatusController {
     private final OrderStatusService service;
 
