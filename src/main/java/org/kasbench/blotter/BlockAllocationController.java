@@ -13,10 +13,14 @@ import java.util.List;
 @RequestMapping("/blockAllocation")
 public class BlockAllocationController {
     private final BlockAllocationService service;
+    private final OrderRepository orderRepository;
+    private final BlockRepository blockRepository;
 
     @Autowired
-    public BlockAllocationController(BlockAllocationService service) {
+    public BlockAllocationController(BlockAllocationService service, OrderRepository orderRepository, BlockRepository blockRepository) {
         this.service = service;
+        this.orderRepository = orderRepository;
+        this.blockRepository = blockRepository;
     }
 
     @GetMapping
@@ -43,15 +47,32 @@ public class BlockAllocationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BlockAllocation createBlockAllocation(@RequestBody BlockAllocation allocation) {
+    public BlockAllocation createBlockAllocation(@RequestBody BlockAllocationRequestDTO dto) {
+        BlockAllocation allocation = new BlockAllocation();
+        allocation.setOrder(orderRepository.findById(dto.getOrderId())
+            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Order not found with id: " + dto.getOrderId())));
+        allocation.setBlock(blockRepository.findById(dto.getBlockId())
+            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Block not found with id: " + dto.getBlockId())));
+        allocation.setQuantity(dto.getQuantity());
+        allocation.setFilledQuantity(dto.getFilledQuantity());
+        allocation.setVersion(dto.getVersion());
         return service.save(allocation);
     }
 
     @PutMapping("/{blockAllocationId}")
     public BlockAllocation updateBlockAllocation(
             @PathVariable Integer blockAllocationId,
-            @RequestBody BlockAllocation allocation) {
-        return service.update(blockAllocationId, allocation);
+            @RequestBody BlockAllocationRequestDTO dto) {
+        BlockAllocation existing = service.findById(blockAllocationId)
+            .orElseThrow(() -> new EntityNotFoundException("BlockAllocation not found with id: " + blockAllocationId));
+        existing.setOrder(orderRepository.findById(dto.getOrderId())
+            .orElseThrow(() -> new EntityNotFoundException("Order not found with id: " + dto.getOrderId())));
+        existing.setBlock(blockRepository.findById(dto.getBlockId())
+            .orElseThrow(() -> new EntityNotFoundException("Block not found with id: " + dto.getBlockId())));
+        existing.setQuantity(dto.getQuantity());
+        existing.setFilledQuantity(dto.getFilledQuantity());
+        existing.setVersion(dto.getVersion());
+        return service.update(blockAllocationId, existing);
     }
 
     @DeleteMapping("/{blockAllocationId}")

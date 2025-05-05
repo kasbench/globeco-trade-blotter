@@ -12,10 +12,12 @@ public class Block {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "security_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Security security;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_type_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private OrderType orderType;
 
     @Version

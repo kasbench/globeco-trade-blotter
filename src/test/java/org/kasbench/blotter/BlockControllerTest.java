@@ -13,11 +13,17 @@ import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
 
 @ExtendWith(MockitoExtension.class)
 class BlockControllerTest {
     @Mock
     private BlockService service;
+    @Mock
+    private SecurityRepository securityRepository;
+    @Mock
+    private OrderTypeRepository orderTypeRepository;
     private BlockController controller;
     private Block sampleBlock;
     private Security sampleSecurity;
@@ -25,7 +31,8 @@ class BlockControllerTest {
 
     @BeforeEach
     void setUp() {
-        controller = new BlockController(service);
+        MockitoAnnotations.openMocks(this);
+        controller = new BlockController(service, securityRepository, orderTypeRepository);
         sampleSecurity = new Security();
         sampleSecurity.setId(1);
         sampleOrderType = new OrderType();
@@ -62,26 +69,48 @@ class BlockControllerTest {
 
     @Test
     void createBlock_CreatesAndReturnsBlock() {
-        when(service.save(sampleBlock)).thenReturn(sampleBlock);
-        Block result = controller.createBlock(sampleBlock);
+        BlockRequestDTO dto = new BlockRequestDTO();
+        dto.setSecurityId(1);
+        dto.setOrderTypeId(2);
+        dto.setVersion(1);
+        when(securityRepository.findById(1)).thenReturn(Optional.of(sampleSecurity));
+        when(orderTypeRepository.findById(2)).thenReturn(Optional.of(sampleOrderType));
+        when(service.save(any(Block.class))).thenReturn(sampleBlock);
+        Block result = controller.createBlock(dto);
         assertEquals(sampleBlock, result);
-        verify(service).save(sampleBlock);
+        verify(securityRepository).findById(1);
+        verify(orderTypeRepository).findById(2);
+        verify(service).save(any(Block.class));
     }
 
     @Test
     void updateBlock_WhenExists_UpdatesAndReturnsBlock() {
-        when(service.update(1, sampleBlock)).thenReturn(sampleBlock);
-        Block result = controller.updateBlock(1, sampleBlock);
+        BlockRequestDTO dto = new BlockRequestDTO();
+        dto.setSecurityId(1);
+        dto.setOrderTypeId(2);
+        dto.setVersion(1);
+        when(service.findById(1)).thenReturn(Optional.of(sampleBlock));
+        when(securityRepository.findById(1)).thenReturn(Optional.of(sampleSecurity));
+        when(orderTypeRepository.findById(2)).thenReturn(Optional.of(sampleOrderType));
+        when(service.update(eq(1), any(Block.class))).thenReturn(sampleBlock);
+        Block result = controller.updateBlock(1, dto);
         assertEquals(sampleBlock, result);
-        verify(service).update(1, sampleBlock);
+        verify(service).findById(1);
+        verify(securityRepository).findById(1);
+        verify(orderTypeRepository).findById(2);
+        verify(service).update(eq(1), any(Block.class));
     }
 
     @Test
     void updateBlock_WhenNotExists_ThrowsException() {
-        when(service.update(1, sampleBlock)).thenThrow(new EntityNotFoundException("Not found"));
+        BlockRequestDTO dto = new BlockRequestDTO();
+        dto.setSecurityId(1);
+        dto.setOrderTypeId(2);
+        dto.setVersion(1);
+        when(service.findById(1)).thenReturn(Optional.empty());
         assertThrows(EntityNotFoundException.class,
-                () -> controller.updateBlock(1, sampleBlock));
-        verify(service).update(1, sampleBlock);
+                () -> controller.updateBlock(1, dto));
+        verify(service).findById(1);
     }
 
     @Test

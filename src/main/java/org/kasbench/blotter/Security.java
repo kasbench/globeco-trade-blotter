@@ -19,7 +19,7 @@ public class Security {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "security_type_id", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private SecurityType securityType;
 
     @Version

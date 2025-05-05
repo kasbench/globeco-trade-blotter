@@ -15,12 +15,14 @@ public class TradeController {
     private final TradeService service;
     private final BlockRepository blockRepository;
     private final TradeTypeRepository tradeTypeRepository;
+    private final DestinationRepository destinationRepository;
 
     @Autowired
-    public TradeController(TradeService service, BlockRepository blockRepository, TradeTypeRepository tradeTypeRepository) {
+    public TradeController(TradeService service, BlockRepository blockRepository, TradeTypeRepository tradeTypeRepository, DestinationRepository destinationRepository) {
         this.service = service;
         this.blockRepository = blockRepository;
         this.tradeTypeRepository = tradeTypeRepository;
+        this.destinationRepository = destinationRepository;
     }
 
     @GetMapping
@@ -47,8 +49,18 @@ public class TradeController {
         trade.setBlock(blockRepository.findById(dto.getBlockId())
             .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Block not found with id: " + dto.getBlockId())));
         trade.setQuantity(dto.getQuantity());
-        trade.setTradeType(tradeTypeRepository.findById(dto.getTradeTypeId())
-            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("TradeType not found with id: " + dto.getTradeTypeId())));
+        if (dto.getTradeTypeId() != null) {
+            trade.setTradeType(tradeTypeRepository.findById(dto.getTradeTypeId())
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("TradeType not found with id: " + dto.getTradeTypeId())));
+        } else {
+            trade.setTradeType(null);
+        }
+        if (dto.getDestinationId() != null) {
+            trade.setDestination(destinationRepository.findById(dto.getDestinationId())
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Destination not found with id: " + dto.getDestinationId())));
+        } else {
+            trade.setDestination(null);
+        }
         trade.setFilledQuantity(dto.getFilledQuantity() != null ? dto.getFilledQuantity() : BigDecimal.ZERO);
         trade.setVersion(dto.getVersion());
         return service.save(trade);
@@ -63,8 +75,18 @@ public class TradeController {
         existing.setBlock(blockRepository.findById(dto.getBlockId())
             .orElseThrow(() -> new EntityNotFoundException("Block not found with id: " + dto.getBlockId())));
         existing.setQuantity(dto.getQuantity());
-        existing.setTradeType(tradeTypeRepository.findById(dto.getTradeTypeId())
-            .orElseThrow(() -> new EntityNotFoundException("TradeType not found with id: " + dto.getTradeTypeId())));
+        if (dto.getTradeTypeId() != null) {
+            existing.setTradeType(tradeTypeRepository.findById(dto.getTradeTypeId())
+                .orElseThrow(() -> new EntityNotFoundException("TradeType not found with id: " + dto.getTradeTypeId())));
+        } else {
+            existing.setTradeType(null);
+        }
+        if (dto.getDestinationId() != null) {
+            existing.setDestination(destinationRepository.findById(dto.getDestinationId())
+                .orElseThrow(() -> new EntityNotFoundException("Destination not found with id: " + dto.getDestinationId())));
+        } else {
+            existing.setDestination(null);
+        }
         existing.setFilledQuantity(dto.getFilledQuantity() != null ? dto.getFilledQuantity() : BigDecimal.ZERO);
         existing.setVersion(dto.getVersion());
         return service.update(tradeId, existing);

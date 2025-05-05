@@ -96,10 +96,10 @@ CREATE TABLE public.trade_type (
 
 CREATE TABLE public.trade (
     id serial NOT NULL,
-    destination_id integer NOT NULL,
+    destination_id integer,
     block_id integer NOT NULL,
     quantity decimal(18,8),
-    trade_type_id integer NOT NULL,
+    trade_type_id integer,
     filled_quantity decimal(18,8) NOT NULL DEFAULT 0,
     version integer NOT NULL DEFAULT 0,
     CONSTRAINT trade_pk PRIMARY KEY (id)

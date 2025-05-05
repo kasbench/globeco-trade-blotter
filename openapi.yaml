@@ -857,7 +857,7 @@ paths:
           $ref: '#/components/responses/NotFound'
         '409':
           $ref: '#/components/responses/Conflict'
-  /order/{orderId}/status/{orderStatusId}:
+  /order/{orderId}/status/{statusId}:
     post:
       tags: [Order]
       summary: Update the orderStatusId for an order
@@ -868,7 +868,7 @@ paths:
           schema:
             type: integer
         - in: path
-          name: orderStatusId
+          name: statusId
           required: true
           schema:
             type: integer
@@ -898,7 +898,7 @@ paths:
           schema:
             type: integer
         - in: path
-          name: orderStatusId
+          name: statusId
           required: true
           schema:
             type: integer
@@ -940,7 +940,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Block'
+              $ref: '#/components/schemas/BlockRequestDTO'
       responses:
         '201':
           description: Created block
@@ -981,7 +981,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Block'
+              $ref: '#/components/schemas/BlockRequestDTO'
       responses:
         '200':
           description: Updated block
@@ -1057,7 +1057,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BlockAllocation'
+              $ref: '#/components/schemas/BlockAllocationRequestDTO'
       responses:
         '201':
           description: Created block allocation
@@ -1136,7 +1136,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BlockAllocation'
+              $ref: '#/components/schemas/BlockAllocationRequestDTO'
       responses:
         '200':
           description: Updated block allocation
@@ -1457,24 +1457,26 @@ components:
     Security:
       type: object
       properties:
-        securityId:
+        id:
           type: integer
-        abbreviation:
+        ticker:
           type: string
         description:
           type: string
-        versionId:
+        securityType:
+          $ref: '#/components/schemas/SecurityType'
+        version:
           type: integer
-      required: [securityId, abbreviation, description, versionId]
+      required: [id, ticker, securityType, version]
     Order:
       type: object
       properties:
-        orderId:
+        id:
           type: integer
-        securityId:
-          type: integer
-        blotterId:
-          type: integer
+        security:
+          $ref: '#/components/schemas/Security'
+        blotter:
+          $ref: '#/components/schemas/Blotter'
           nullable: true
         quantity:
           type: number
@@ -1482,61 +1484,65 @@ components:
         orderTimestamp:
           type: string
           format: date-time
-        orderTypeId:
+        orderType:
+          $ref: '#/components/schemas/OrderType'
+        orderStatus:
+          $ref: '#/components/schemas/OrderStatus'
+          nullable: true
+        version:
           type: integer
-        orderStatusId:
-          type: integer
-        versionId:
-          type: integer
-      required: [orderId, securityId, quantity, orderTypeId, orderStatusId, versionId]
+      required: [id, security, quantity, orderType, version]
     Block:
       type: object
       properties:
-        blockId:
+        id:
           type: integer
-        securityId:
+        security:
+          $ref: '#/components/schemas/Security'
+        orderType:
+          $ref: '#/components/schemas/OrderType'
+        version:
           type: integer
-        orderTypeId:
-          type: integer
-        versionId:
-          type: integer
-      required: [blockId, securityId, orderTypeId, versionId]
+      required: [id, security, orderType, version]
     BlockAllocation:
       type: object
       properties:
-        blockAllocationId:
+        id:
           type: integer
-        orderId:
-          type: integer
-        blockId:
-          type: integer
+        order:
+          $ref: '#/components/schemas/Order'
+        block:
+          $ref: '#/components/schemas/Block'
         quantity:
           type: number
           format: double
         filledQuantity:
           type: number
           format: double
-        versionId:
+        version:
           type: integer
-      required: [blockAllocationId, orderId, blockId, quantity, filledQuantity, versionId]
+      required: [id, order, block, quantity, filledQuantity, version]
     Trade:
       type: object
       properties:
-        tradeId:
+        id:
           type: integer
-        blockId:
-          type: integer
+        block:
+          $ref: '#/components/schemas/Block'
         quantity:
           type: number
           format: double
-        tradeTypeId:
-          type: integer
+        tradeType:
+          $ref: '#/components/schemas/TradeType'
+        destination:
+          $ref: '#/components/schemas/Destination'
+          nullable: true
         filledQuantity:
           type: number
           format: double
-        versionId:
+        version:
           type: integer
-      required: [tradeId, blockId, quantity, tradeTypeId, filledQuantity, versionId]
+      required: [id, block, quantity, filledQuantity, version]
     SecurityRequestDTO:
       type: object
       properties:
@@ -1577,12 +1583,40 @@ components:
           format: double
         tradeTypeId:
           type: integer
+        destinationId:
+          type: integer
         filledQuantity:
           type: number
           format: double
         version:
           type: integer
-      required: [blockId, quantity, tradeTypeId, version]
+      required: [blockId, quantity, version]
+    BlockRequestDTO:
+      type: object
+      properties:
+        securityId:
+          type: integer
+        orderTypeId:
+          type: integer
+        version:
+          type: integer
+      required: [securityId, orderTypeId]
+    BlockAllocationRequestDTO:
+      type: object
+      properties:
+        orderId:
+          type: integer
+        blockId:
+          type: integer
+        quantity:
+          type: number
+          format: double
+        filledQuantity:
+          type: number
+          format: double
+        version:
+          type: integer
+      required: [orderId, blockId, quantity, filledQuantity]
   responses:
     NotFound:
       description: Resource not found

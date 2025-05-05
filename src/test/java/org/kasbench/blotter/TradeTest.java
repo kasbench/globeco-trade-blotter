@@ -15,7 +15,7 @@ class TradeTest {
     void testAllArgsConstructor() {
         Block block = new Block();
         TradeType tradeType = new TradeType();
-        Trade trade = new Trade(1, block, new BigDecimal("100.00"), tradeType, new BigDecimal("50.00"), 1);
+        Trade trade = new Trade(1, block, new BigDecimal("100.00"), tradeType, null, new BigDecimal("50.00"), 1);
         assertEquals(1, trade.getId());
         assertEquals(block, trade.getBlock());
         assertEquals(new BigDecimal("100.00"), trade.getQuantity());
@@ -47,9 +47,9 @@ class TradeTest {
     void testEqualsAndHashCode() {
         Block block = new Block();
         TradeType tradeType = new TradeType();
-        Trade t1 = new Trade(1, block, new BigDecimal("100.00"), tradeType, new BigDecimal("50.00"), 1);
-        Trade t2 = new Trade(1, block, new BigDecimal("100.00"), tradeType, new BigDecimal("50.00"), 1);
-        Trade t3 = new Trade(2, block, new BigDecimal("200.00"), tradeType, new BigDecimal("100.00"), 2);
+        Trade t1 = new Trade(1, block, new BigDecimal("100.00"), tradeType, null, new BigDecimal("50.00"), 1);
+        Trade t2 = new Trade(1, block, new BigDecimal("100.00"), tradeType, null, new BigDecimal("50.00"), 1);
+        Trade t3 = new Trade(2, block, new BigDecimal("200.00"), tradeType, null, new BigDecimal("100.00"), 2);
         assertEquals(t1, t2);
         assertNotEquals(t1, t3);
         assertEquals(t1.hashCode(), t2.hashCode());
@@ -61,7 +61,7 @@ class TradeTest {
         block.setId(10);
         TradeType tradeType = new TradeType();
         tradeType.setId(20);
-        Trade trade = new Trade(1, block, new BigDecimal("100.00"), tradeType, new BigDecimal("50.00"), 1);
+        Trade trade = new Trade(1, block, new BigDecimal("100.00"), tradeType, null, new BigDecimal("50.00"), 1);
         String str = trade.toString();
         assertTrue(str.contains("id=1"));
         assertTrue(str.contains("block=10"));

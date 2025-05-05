@@ -14,11 +14,17 @@ import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
 
 @ExtendWith(MockitoExtension.class)
 class BlockAllocationControllerTest {
     @Mock
     private BlockAllocationService service;
+    @Mock
+    private OrderRepository orderRepository;
+    @Mock
+    private BlockRepository blockRepository;
     private BlockAllocationController controller;
     private BlockAllocation sampleAlloc;
     private Order sampleOrder;
@@ -26,7 +32,8 @@ class BlockAllocationControllerTest {
 
     @BeforeEach
     void setUp() {
-        controller = new BlockAllocationController(service);
+        MockitoAnnotations.openMocks(this);
+        controller = new BlockAllocationController(service, orderRepository, blockRepository);
         sampleOrder = new Order();
         sampleOrder.setId(1);
         sampleBlock = new Block();
@@ -81,26 +88,54 @@ class BlockAllocationControllerTest {
 
     @Test
     void createBlockAllocation_CreatesAndReturnsAlloc() {
-        when(service.save(sampleAlloc)).thenReturn(sampleAlloc);
-        BlockAllocation result = controller.createBlockAllocation(sampleAlloc);
+        BlockAllocationRequestDTO dto = new BlockAllocationRequestDTO();
+        dto.setOrderId(1);
+        dto.setBlockId(2);
+        dto.setQuantity(new BigDecimal("100.00"));
+        dto.setFilledQuantity(new BigDecimal("50.00"));
+        dto.setVersion(1);
+        when(orderRepository.findById(1)).thenReturn(Optional.of(sampleOrder));
+        when(blockRepository.findById(2)).thenReturn(Optional.of(sampleBlock));
+        when(service.save(any(BlockAllocation.class))).thenReturn(sampleAlloc);
+        BlockAllocation result = controller.createBlockAllocation(dto);
         assertEquals(sampleAlloc, result);
-        verify(service).save(sampleAlloc);
+        verify(orderRepository).findById(1);
+        verify(blockRepository).findById(2);
+        verify(service).save(any(BlockAllocation.class));
     }
 
     @Test
     void updateBlockAllocation_WhenExists_UpdatesAndReturnsAlloc() {
-        when(service.update(1, sampleAlloc)).thenReturn(sampleAlloc);
-        BlockAllocation result = controller.updateBlockAllocation(1, sampleAlloc);
+        BlockAllocationRequestDTO dto = new BlockAllocationRequestDTO();
+        dto.setOrderId(1);
+        dto.setBlockId(2);
+        dto.setQuantity(new BigDecimal("100.00"));
+        dto.setFilledQuantity(new BigDecimal("50.00"));
+        dto.setVersion(1);
+        when(service.findById(1)).thenReturn(Optional.of(sampleAlloc));
+        when(orderRepository.findById(1)).thenReturn(Optional.of(sampleOrder));
+        when(blockRepository.findById(2)).thenReturn(Optional.of(sampleBlock));
+        when(service.update(eq(1), any(BlockAllocation.class))).thenReturn(sampleAlloc);
+        BlockAllocation result = controller.updateBlockAllocation(1, dto);
         assertEquals(sampleAlloc, result);
-        verify(service).update(1, sampleAlloc);
+        verify(service).findById(1);
+        verify(orderRepository).findById(1);
+        verify(blockRepository).findById(2);
+        verify(service).update(eq(1), any(BlockAllocation.class));
     }
 
     @Test
     void updateBlockAllocation_WhenNotExists_ThrowsException() {
-        when(service.update(1, sampleAlloc)).thenThrow(new EntityNotFoundException("Not found"));
+        BlockAllocationRequestDTO dto = new BlockAllocationRequestDTO();
+        dto.setOrderId(1);
+        dto.setBlockId(2);
+        dto.setQuantity(new BigDecimal("100.00"));
+        dto.setFilledQuantity(new BigDecimal("50.00"));
+        dto.setVersion(1);
+        when(service.findById(1)).thenReturn(Optional.empty());
         assertThrows(EntityNotFoundException.class,
-                () -> controller.updateBlockAllocation(1, sampleAlloc));
-        verify(service).update(1, sampleAlloc);
+                () -> controller.updateBlockAllocation(1, dto));
+        verify(service).findById(1);
     }
 
     @Test

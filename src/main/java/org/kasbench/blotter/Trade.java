@@ -13,14 +13,21 @@ public class Trade {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "block_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Block block;
 
     @Column(precision = 18, scale = 8, nullable = false)
     private BigDecimal quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trade_type_id", nullable = false)
+    @JoinColumn(name = "trade_type_id")
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private TradeType tradeType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "destination_id")
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Destination destination;
 
     @Column(name = "filled_quantity", precision = 18, scale = 8, nullable = false)
     private BigDecimal filledQuantity = BigDecimal.ZERO;
@@ -31,11 +38,12 @@ public class Trade {
 
     public Trade() {}
 
-    public Trade(Integer id, Block block, BigDecimal quantity, TradeType tradeType, BigDecimal filledQuantity, Integer version) {
+    public Trade(Integer id, Block block, BigDecimal quantity, TradeType tradeType, Destination destination, BigDecimal filledQuantity, Integer version) {
         this.id = id;
         this.block = block;
         this.quantity = quantity;
         this.tradeType = tradeType;
+        this.destination = destination;
         this.filledQuantity = filledQuantity;
         this.version = version;
     }
@@ -52,6 +60,9 @@ public class Trade {
     public TradeType getTradeType() { return tradeType; }
     public void setTradeType(TradeType tradeType) { this.tradeType = tradeType; }
 
+    public Destination getDestination() { return destination; }
+    public void setDestination(Destination destination) { this.destination = destination; }
+
     public BigDecimal getFilledQuantity() { return filledQuantity; }
     public void setFilledQuantity(BigDecimal filledQuantity) { this.filledQuantity = filledQuantity; }
 
@@ -67,13 +78,14 @@ public class Trade {
                Objects.equals(block, trade.block) &&
                Objects.equals(quantity, trade.quantity) &&
                Objects.equals(tradeType, trade.tradeType) &&
+               Objects.equals(destination, trade.destination) &&
                Objects.equals(filledQuantity, trade.filledQuantity) &&
                Objects.equals(version, trade.version);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, block, quantity, tradeType, filledQuantity, version);
+        return Objects.hash(id, block, quantity, tradeType, destination, filledQuantity, version);
     }
 
     @Override
@@ -83,6 +95,7 @@ public class Trade {
                 ", block=" + (block != null ? block.getId() : null) +
                 ", quantity=" + quantity +
                 ", tradeType=" + (tradeType != null ? tradeType.getId() : null) +
+                ", destination=" + (destination != null ? destination.getId() : null) +
                 ", filledQuantity=" + filledQuantity +
                 ", version=" + version +
                 '}';

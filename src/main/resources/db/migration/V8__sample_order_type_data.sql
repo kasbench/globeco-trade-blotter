@@ -3,8 +3,10 @@
 -- License: Apache 2.0
 
 INSERT INTO public.order_type (id, abbreviation, description, version) VALUES
-    (1, 'MKT', 'Market Order', 1),
-    (2, 'LMT', 'Limit Order', 1),
-    (3, 'STP', 'Stop Order', 1),
-    (4, 'STPLMT', 'Stop Limit Order', 1),
-    (5, 'MOC', 'Market on Close', 1); 
+    (1, 'buy', 'Buy', 1),
+    (2, 'sell', 'Sell', 1),
+    (3, 'open', 'Sell to Open', 1),
+    (4, 'close', 'Buy to Close', 1),
+    (5, 'exercise', 'Excercise Option', 1),
+    (6, 'sub', 'Subscribe', 1),
+    (7, 'red', 'Redeem', 1); 

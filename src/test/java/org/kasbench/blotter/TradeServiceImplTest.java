@@ -37,7 +37,7 @@ class TradeServiceImplTest {
         sampleBlock.setId(1);
         sampleTradeType = new TradeType();
         sampleTradeType.setId(2);
-        sampleTrade = new Trade(1, sampleBlock, new BigDecimal("100.00"), sampleTradeType, new BigDecimal("50.00"), 1);
+        sampleTrade = new Trade(1, sampleBlock, new BigDecimal("100.00"), sampleTradeType, null, new BigDecimal("50.00"), 1);
         alloc1 = new BlockAllocation();
         alloc1.setId(101);
         alloc1.setBlock(sampleBlock);
@@ -93,25 +93,25 @@ class TradeServiceImplTest {
 
     @Test
     void save_InvalidQuantity_Throws() {
-        Trade trade = new Trade(2, sampleBlock, new BigDecimal("0.00"), sampleTradeType, BigDecimal.ZERO, 1);
+        Trade trade = new Trade(2, sampleBlock, new BigDecimal("0.00"), sampleTradeType, null, BigDecimal.ZERO, 1);
         assertThrows(IllegalArgumentException.class, () -> service.save(trade));
     }
 
     @Test
     void save_InvalidFilled_Throws() {
-        Trade trade = new Trade(2, sampleBlock, new BigDecimal("10.00"), sampleTradeType, new BigDecimal("-1.00"), 1);
+        Trade trade = new Trade(2, sampleBlock, new BigDecimal("10.00"), sampleTradeType, null, new BigDecimal("-1.00"), 1);
         assertThrows(IllegalArgumentException.class, () -> service.save(trade));
     }
 
     @Test
     void save_FilledGreaterThanQuantity_Throws() {
-        Trade trade = new Trade(2, sampleBlock, new BigDecimal("10.00"), sampleTradeType, new BigDecimal("20.00"), 1);
+        Trade trade = new Trade(2, sampleBlock, new BigDecimal("10.00"), sampleTradeType, null, new BigDecimal("20.00"), 1);
         assertThrows(IllegalArgumentException.class, () -> service.save(trade));
     }
 
     @Test
     void update_WhenExistsAndVersionMatches_UpdatesTrade() {
-        Trade updated = new Trade(1, sampleBlock, new BigDecimal("100.00"), sampleTradeType, new BigDecimal("60.00"), 1);
+        Trade updated = new Trade(1, sampleBlock, new BigDecimal("100.00"), sampleTradeType, null, new BigDecimal("60.00"), 1);
         when(repository.findById(1)).thenReturn(Optional.of(sampleTrade));
         when(repository.save(any(Trade.class))).thenReturn(updated);
         Trade result = service.update(1, updated);
@@ -130,7 +130,7 @@ class TradeServiceImplTest {
 
     @Test
     void update_WhenVersionMismatch_ThrowsException() {
-        Trade updated = new Trade(1, sampleBlock, new BigDecimal("100.00"), sampleTradeType, new BigDecimal("60.00"), 2);
+        Trade updated = new Trade(1, sampleBlock, new BigDecimal("100.00"), sampleTradeType, null, new BigDecimal("60.00"), 2);
         when(repository.findById(1)).thenReturn(Optional.of(sampleTrade));
         assertThrows(ObjectOptimisticLockingFailureException.class, () -> service.update(1, updated));
         verify(repository).findById(1);
@@ -139,7 +139,7 @@ class TradeServiceImplTest {
 
     @Test
     void update_InvalidTrade_Throws() {
-        Trade updated = new Trade(1, sampleBlock, new BigDecimal("0.00"), sampleTradeType, BigDecimal.ZERO, 1);
+        Trade updated = new Trade(1, sampleBlock, new BigDecimal("0.00"), sampleTradeType, null, BigDecimal.ZERO, 1);
         when(repository.findById(1)).thenReturn(Optional.of(sampleTrade));
         assertThrows(IllegalArgumentException.class, () -> service.update(1, updated));
     }
@@ -162,7 +162,7 @@ class TradeServiceImplTest {
 
     @Test
     void delete_WhenVersionMismatch_ThrowsException() {
-        Trade tradeWithDiffVersion = new Trade(1, sampleBlock, new BigDecimal("100.00"), sampleTradeType, new BigDecimal("50.00"), 2);
+        Trade tradeWithDiffVersion = new Trade(1, sampleBlock, new BigDecimal("100.00"), sampleTradeType, null, new BigDecimal("50.00"), 2);
         when(repository.findById(1)).thenReturn(Optional.of(tradeWithDiffVersion));
         assertThrows(ObjectOptimisticLockingFailureException.class, () -> service.delete(1, 1));
         verify(repository).findById(1);
@@ -199,7 +199,7 @@ class TradeServiceImplTest {
 
     @Test
     void fillQuantity_WhenVersionMismatch_ThrowsException() {
-        Trade tradeWithDiffVersion = new Trade(1, sampleBlock, new BigDecimal("100.00"), sampleTradeType, new BigDecimal("50.00"), 2);
+        Trade tradeWithDiffVersion = new Trade(1, sampleBlock, new BigDecimal("100.00"), sampleTradeType, null, new BigDecimal("50.00"), 2);
         when(repository.findById(1)).thenReturn(Optional.of(tradeWithDiffVersion));
         assertThrows(ObjectOptimisticLockingFailureException.class, () -> service.fillQuantity(1, new BigDecimal("10.00"), 1));
     }
@@ -224,7 +224,7 @@ class TradeServiceImplTest {
 
     @Test
     void allocateProRata_VersionMismatch_Throws() {
-        Trade tradeDiffVersion = new Trade(1, sampleBlock, new BigDecimal("100.00"), sampleTradeType, new BigDecimal("50.00"), 2);
+        Trade tradeDiffVersion = new Trade(1, sampleBlock, new BigDecimal("100.00"), sampleTradeType, null, new BigDecimal("50.00"), 2);
         when(repository.findById(1)).thenReturn(Optional.of(tradeDiffVersion));
         assertThrows(ObjectOptimisticLockingFailureException.class, () -> service.allocateProRata(1, 1));
     }

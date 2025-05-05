@@ -12,10 +12,14 @@ import java.util.List;
 @RequestMapping("/block")
 public class BlockController {
     private final BlockService service;
+    private final SecurityRepository securityRepository;
+    private final OrderTypeRepository orderTypeRepository;
 
     @Autowired
-    public BlockController(BlockService service) {
+    public BlockController(BlockService service, SecurityRepository securityRepository, OrderTypeRepository orderTypeRepository) {
         this.service = service;
+        this.securityRepository = securityRepository;
+        this.orderTypeRepository = orderTypeRepository;
     }
 
     @GetMapping
@@ -32,15 +36,28 @@ public class BlockController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Block createBlock(@RequestBody Block block) {
+    public Block createBlock(@RequestBody BlockRequestDTO dto) {
+        Block block = new Block();
+        block.setSecurity(securityRepository.findById(dto.getSecurityId())
+            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Security not found with id: " + dto.getSecurityId())));
+        block.setOrderType(orderTypeRepository.findById(dto.getOrderTypeId())
+            .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("OrderType not found with id: " + dto.getOrderTypeId())));
+        block.setVersion(dto.getVersion());
         return service.save(block);
     }
 
     @PutMapping("/{blockId}")
     public Block updateBlock(
             @PathVariable Integer blockId,
-            @RequestBody Block block) {
-        return service.update(blockId, block);
+            @RequestBody BlockRequestDTO dto) {
+        Block existing = service.findById(blockId)
+            .orElseThrow(() -> new EntityNotFoundException("Block not found with id: " + blockId));
+        existing.setSecurity(securityRepository.findById(dto.getSecurityId())
+            .orElseThrow(() -> new EntityNotFoundException("Security not found with id: " + dto.getSecurityId())));
+        existing.setOrderType(orderTypeRepository.findById(dto.getOrderTypeId())
+            .orElseThrow(() -> new EntityNotFoundException("OrderType not found with id: " + dto.getOrderTypeId())));
+        existing.setVersion(dto.getVersion());
+        return service.update(blockId, existing);
     }
 
     @DeleteMapping("/{blockId}")

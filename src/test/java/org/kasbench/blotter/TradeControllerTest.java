@@ -25,20 +25,25 @@ class TradeControllerTest {
     private BlockRepository blockRepository;
     @Mock
     private TradeTypeRepository tradeTypeRepository;
+    @Mock
+    private DestinationRepository destinationRepository;
     private TradeController controller;
     private Trade sampleTrade;
     private Block sampleBlock;
     private TradeType sampleTradeType;
+    private Destination sampleDestination;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        controller = new TradeController(service, blockRepository, tradeTypeRepository);
+        controller = new TradeController(service, blockRepository, tradeTypeRepository, destinationRepository);
         sampleBlock = new Block();
         sampleBlock.setId(1);
         sampleTradeType = new TradeType();
         sampleTradeType.setId(2);
-        sampleTrade = new Trade(1, sampleBlock, new BigDecimal("100.00"), sampleTradeType, new BigDecimal("50.00"), 1);
+        sampleDestination = new Destination();
+        sampleDestination.setId(3);
+        sampleTrade = new Trade(1, sampleBlock, new BigDecimal("100.00"), sampleTradeType, sampleDestination, new BigDecimal("50.00"), 1);
     }
 
     @Test
@@ -78,40 +83,46 @@ class TradeControllerTest {
     }
 
     @Test
-    void createTrade_CreatesAndReturnsTrade() {
+    void createTrade_CreatesAndReturnsTrade_WithDestination() {
         TradeRequestDTO dto = new TradeRequestDTO();
         dto.setBlockId(1);
         dto.setQuantity(new BigDecimal("100.00"));
         dto.setTradeTypeId(2);
+        dto.setDestinationId(3);
         dto.setFilledQuantity(new BigDecimal("50.00"));
         dto.setVersion(1);
         when(blockRepository.findById(1)).thenReturn(Optional.of(sampleBlock));
         when(tradeTypeRepository.findById(2)).thenReturn(Optional.of(sampleTradeType));
+        when(destinationRepository.findById(3)).thenReturn(Optional.of(sampleDestination));
         when(service.save(any(Trade.class))).thenReturn(sampleTrade);
         Trade result = controller.createTrade(dto);
         assertEquals(sampleTrade, result);
         verify(blockRepository).findById(1);
         verify(tradeTypeRepository).findById(2);
+        verify(destinationRepository).findById(3);
         verify(service).save(any(Trade.class));
     }
 
     @Test
-    void updateTrade_WhenExists_UpdatesAndReturnsTrade() {
+    void updateTrade_WhenExists_UpdatesAndReturnsTrade_WithDestination() {
         TradeRequestDTO dto = new TradeRequestDTO();
         dto.setBlockId(1);
         dto.setQuantity(new BigDecimal("100.00"));
         dto.setTradeTypeId(2);
+        dto.setDestinationId(3);
         dto.setFilledQuantity(new BigDecimal("50.00"));
         dto.setVersion(1);
         when(service.findById(1)).thenReturn(Optional.of(sampleTrade));
         when(blockRepository.findById(1)).thenReturn(Optional.of(sampleBlock));
         when(tradeTypeRepository.findById(2)).thenReturn(Optional.of(sampleTradeType));
+        when(destinationRepository.findById(3)).thenReturn(Optional.of(sampleDestination));
         when(service.update(eq(1), any(Trade.class))).thenReturn(sampleTrade);
         Trade result = controller.updateTrade(1, dto);
         assertEquals(sampleTrade, result);
         verify(service).findById(1);
         verify(blockRepository).findById(1);
         verify(tradeTypeRepository).findById(2);
+        verify(destinationRepository).findById(3);
         verify(service).update(eq(1), any(Trade.class));
     }
 
@@ -207,5 +218,53 @@ class TradeControllerTest {
         ResponseEntity<String> response = controller.handleIllegalArgument(ex);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Invalid", response.getBody());
+    }
+
+    @Test
+    void createTrade_AllowsNullDestination() {
+        TradeRequestDTO dto = new TradeRequestDTO();
+        dto.setBlockId(1);
+        dto.setQuantity(new BigDecimal("100.00"));
+        dto.setTradeTypeId(2);
+        dto.setDestinationId(null);
+        dto.setFilledQuantity(new BigDecimal("50.00"));
+        dto.setVersion(1);
+        when(blockRepository.findById(1)).thenReturn(Optional.of(sampleBlock));
+        when(tradeTypeRepository.findById(2)).thenReturn(Optional.of(sampleTradeType));
+        when(service.save(any(Trade.class))).thenAnswer(invocation -> {
+            Trade t = invocation.getArgument(0);
+            assertNull(t.getDestination());
+            return t;
+        });
+        Trade result = controller.createTrade(dto);
+        assertNull(result.getDestination());
+        verify(blockRepository).findById(1);
+        verify(tradeTypeRepository).findById(2);
+        verify(service).save(any(Trade.class));
+    }
+
+    @Test
+    void updateTrade_AllowsNullDestination() {
+        TradeRequestDTO dto = new TradeRequestDTO();
+        dto.setBlockId(1);
+        dto.setQuantity(new BigDecimal("100.00"));
+        dto.setTradeTypeId(2);
+        dto.setDestinationId(null);
+        dto.setFilledQuantity(new BigDecimal("50.00"));
+        dto.setVersion(1);
+        when(service.findById(1)).thenReturn(Optional.of(sampleTrade));
+        when(blockRepository.findById(1)).thenReturn(Optional.of(sampleBlock));
+        when(tradeTypeRepository.findById(2)).thenReturn(Optional.of(sampleTradeType));
+        when(service.update(eq(1), any(Trade.class))).thenAnswer(invocation -> {
+            Trade t = invocation.getArgument(1);
+            assertNull(t.getDestination());
+            return t;
+        });
+        Trade result = controller.updateTrade(1, dto);
+        assertNull(result.getDestination());
+        verify(service).findById(1);
+        verify(blockRepository).findById(1);
+        verify(tradeTypeRepository).findById(2);
+        verify(service).update(eq(1), any(Trade.class));
     }
 } 
